@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cppDataPipeline: Main Page</title>
+<title>cppDataPipeline: FAIR Data Pipeline C++ API</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">cppDataPipeline<span id="projectnumber">&#160;0.3.0</span>
    </div>
-   <div id="projectbrief">C++ Implementation of the Scottish COVID Response Consortium FAIR Data Pipeline</div>
+   <div id="projectbrief">C++ Implementation of the FAIR Data Pipeline API</div>
   </td>
  </tr>
  </tbody>
@@ -62,10 +62,43 @@ $(function() {
 </iframe>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">cppDataPipeline Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">FAIR Data Pipeline C++ API </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p ><a class="anchor" id="md_README"></a> <a href="https://github.com/FAIRDataPipeline/cppDataPipeline/actions/workflows/fdp_cpp_api.yaml"><img src="https://github.com/FAIRDataPipeline/cppDataPipeline/actions/workflows/fdp_cpp_api.yaml/badge.svg" alt="FDP C++ API" style="pointer-events: none;" class="inline"/></a> <a href="https://www.gnu.org/licenses/lgpl-3.0"><img src="https://img.shields.io/badge/License-LGPL_v3-blue.svg" alt="License: LGPL v3" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/FAIRDataPipeline/cppDataPipeline/blob/main/software-checklist.md"><img src="https://img.shields.io/badge/software-checklist-3891A6" alt="software-checklist" class="inline"/></a> <a href="https://doi.org/10.5281/zenodo.5874669"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.5874669.svg" alt="DOI" style="pointer-events: none;" class="inline"/></a></p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Contents</h1>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#outline">Outline</a></li>
+<li><a href="#unit-tests">Unit Tests</a></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Installation</h1>
+<p >You can build and test the library using CMake, this implementation requires <code>C++11</code>.</p>
+<p >It is recomended that you install CURL prior to installation of this API</p><ul>
+<li><a href="https://curl.se/libcurl/">CURL</a></li>
+</ul>
+<p >compile the library and tests by running:</p>
+<div class="fragment"><div class="line">$ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON</div>
+<div class="line">$ cmake --build build</div>
+</div><!-- fragment --><p ><b>Important</b> For multi-config compilers such as Visual Studio xcode or ninja the config type needs to be set to <code>Release</code> otherwise the API will not build for example: </p><div class="fragment"><div class="line">$ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON</div>
+<div class="line">$ cmake --build build --config=Release</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
+Outline</h1>
+<p >The main class the user will interact with is <code>DataPipeline</code> which has only the required methods such as <code>link_read</code> etc. This class has a member which is a pointer to an underlying <code>DataPipelineImpl_</code> class which performs the various procedures required to handle the data. A logger has been used to give as much feedback to the user as possible, the verbosity being handled by a log level argument.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
+Unit Tests</h1>
+<p >The unit tests use the local registry, this needs to be running prior to running the tests see: <a href="https://github.com/FAIRDataPipeline/FAIR-CLI#registry">the CLI documentation</a></p>
+<p >Tests can be lauched using the following command: </p>
+<h2><a class="anchor" id="autotoc_md5"></a>
+Unix</h2>
+<div class="fragment"><div class="line">$ ./build/bin/fdpapi-tests</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
+Windows</h2>
+<div class="fragment"><div class="line">$ build\bin\Release\fdpapi-tests.exe</div>
+</div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
