@@ -4,6 +4,6 @@ var searchData=
   ['api_1',['API',['../class_f_d_p_1_1_a_p_i.html#ac194b91d3e48a28447b57415256dee09',1,'FDP::API::API()'],['../class_f_d_p_1_1_a_p_i.html',1,'FDP::API']]],
   ['api_2ehxx_2',['api.hxx',['../api_8hxx.html',1,'']]],
   ['apilogger_3',['APILogger',['../logging_8hxx.html#a86cb9217b28d11ce2d889dbbe92bcb2b',1,'FDP']]],
-  ['apiobject_4',['ApiObject',['../class_f_d_p_1_1_api_object.html#a6db277989caee23fb8ca73c76f629b8a',1,'FDP::ApiObject::ApiObject()'],['../class_f_d_p_1_1_api_object.html',1,'FDP::ApiObject']]],
+  ['apiobject_4',['ApiObject',['../class_f_d_p_1_1_api_object.html',1,'FDP']]],
   ['append_5fwith_5fforward_5fslash_5',['append_with_forward_slash',['../class_f_d_p_1_1_a_p_i.html#a3ad431714e79510c6b4268ffeba7109c',1,'FDP::API']]]
 ];
