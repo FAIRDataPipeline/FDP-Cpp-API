@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['semver_2ehxx_0',['semver.hxx',['../semver_8hxx.html',1,'']]],
-  ['set_5fcomponent_5fobject_1',['set_component_object',['../class_f_d_p_1_1_i_o_object.html#ac4ec3246d12c759041bb2ca099afffac',1,'FDP::IOObject']]],
-  ['set_5fdata_5fproduct_5fobject_2',['set_data_product_object',['../class_f_d_p_1_1_i_o_object.html#a4a3cd1518aa9138c15c52cf925f3f1e3',1,'FDP::IOObject']]],
-  ['sync_5ferror_3',['sync_error',['../class_f_d_p_1_1sync__error.html',1,'FDP']]]
+  ['release_0',['RELEASE',['../namespace_fair_data_pipeline_1_1_versioning.html#a42c8c9e5838425e5fe43e3f542f7bd62a7d649ef069df9885e382417c79f3d5cd',1,'FairDataPipeline::Versioning']]],
+  ['release_5fcandidate_1',['RELEASE_CANDIDATE',['../namespace_fair_data_pipeline_1_1_versioning.html#a42c8c9e5838425e5fe43e3f542f7bd62a29fa7e21ab006777c5d8f86d893bfa53',1,'FairDataPipeline::Versioning']]],
+  ['remove_5fleading_5fforward_5fslash_2',['remove_leading_forward_slash',['../class_fair_data_pipeline_1_1_a_p_i.html#a2643a2cf82f253c2756d4ebdb8ce6650',1,'FairDataPipeline::API']]],
+  ['rest_5fapiquery_5ferror_3',['rest_apiquery_error',['../class_fair_data_pipeline_1_1rest__apiquery__error.html',1,'FairDataPipeline']]]
 ];
