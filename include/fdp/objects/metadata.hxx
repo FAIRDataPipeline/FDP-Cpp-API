@@ -18,7 +18,7 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-#include <regex>
+#include <boost/regex.hpp>
 
 #include "digestpp.hpp"
 

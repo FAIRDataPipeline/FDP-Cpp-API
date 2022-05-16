@@ -15,7 +15,7 @@
 #include <string>
 #include <ghc/filesystem.hpp>
 #include <yaml-cpp/yaml.h>
-#include <regex>
+#include <boost/regex.hpp>
 #include <map>
 #include <ghc/filesystem.hpp>
 #include <stdio.h>

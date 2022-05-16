@@ -327,7 +327,7 @@ void FairDataPipeline::Config::initialise(RESTAPI api_location) {
   Json::Value j_code_repo_root = api_->post("storage_root", repo_storage_root_value_, token_);
   this->code_repo_storage_root_ = ApiObject::from_json( j_code_repo_root );
 
-  std::string repo_storage_path_ = std::regex_replace(meta_data_()["remote_repo"].as<std::string>(), std::regex(repo_storage_root_value_["root"].asString()), "");
+  std::string repo_storage_path_ = boost::regex_replace(meta_data_()["remote_repo"].as<std::string>(), boost::regex(repo_storage_root_value_["root"].asString()), "");
 
   Json::Value repo_storage_location_value_;
   repo_storage_location_value_["hash"] = meta_data_()["latest_commit"].as<std::string>();
