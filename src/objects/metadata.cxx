@@ -65,11 +65,11 @@ std::string current_time_stamp(bool file_name) {
 }
 
 std::string remove_local_from_root(const std::string &root){
-  return std::regex_replace(root, std::regex(std::string("file:\\/\\/")), "");
+  return boost::regex_replace(root, boost::regex(std::string("file:\\/\\/")), "");
 }
 
 std::string remove_backslash_from_path(const std::string &path){
-  return std::regex_replace(path, std::regex(std::string("\\\\")), "/");
+  return boost::regex_replace(path, boost::regex(std::string("\\\\")), "/");
 }
 
 bool file_exists( const std::string &Filename )
