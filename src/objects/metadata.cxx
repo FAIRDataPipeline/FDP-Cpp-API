@@ -51,17 +51,16 @@ std::string generate_random_hash() {
 
 std::string current_time_stamp(bool file_name) {
   auto t_ = std::time(nullptr);
-  auto tm_ = *std::localtime(&t_);
-
-  std::ostringstream oss_;
+  auto tm_ = std::localtime(&t_);
+  char buffer_[80];
 
   if (!file_name) {
-    oss_ << std::put_time(&tm_, "%Y-%m-%d %H:%M:%S");
+    strftime(buffer_, sizeof(buffer_), "%Y-%m-%d %H:%M:%S", tm_);
   } else {
-    oss_ << std::put_time(&tm_, "%Y%m%d-%H%M%S");
+    strftime(buffer_, sizeof(buffer_), "%Y%m%d-%H%M%S", tm_);
   }
 
-  return oss_.str();
+  return std::string(buffer_);
 }
 
 std::string remove_local_from_root(const std::string &root){
