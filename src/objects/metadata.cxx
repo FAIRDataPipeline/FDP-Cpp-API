@@ -6,7 +6,7 @@ std::string calculate_hash_from_file(const ghc::filesystem::path &file_path) {
     throw std::invalid_argument("File '" + file_path.string() + "' not found");
   }
 
-  std::ifstream file_(file_path, std::ios_base::in | std::ios_base::binary);
+  std::ifstream file_(file_path.string(), std::ios_base::in | std::ios_base::binary);
 
   const std::string hash_ = digestpp::sha1().absorb(file_).hexdigest();
 
@@ -51,25 +51,24 @@ std::string generate_random_hash() {
 
 std::string current_time_stamp(bool file_name) {
   auto t_ = std::time(nullptr);
-  auto tm_ = *std::localtime(&t_);
-
-  std::ostringstream oss_;
+  auto tm_ = std::localtime(&t_);
+  char buffer_[80];
 
   if (!file_name) {
-    oss_ << std::put_time(&tm_, "%Y-%m-%d %H:%M:%S");
+    strftime(buffer_, sizeof(buffer_), "%Y-%m-%d %H:%M:%S", tm_);
   } else {
-    oss_ << std::put_time(&tm_, "%Y%m%d-%H%M%S");
+    strftime(buffer_, sizeof(buffer_), "%Y%m%d-%H%M%S", tm_);
   }
 
-  return oss_.str();
+  return std::string(buffer_);
 }
 
 std::string remove_local_from_root(const std::string &root){
-  return std::regex_replace(root, std::regex(std::string("file:\\/\\/")), "");
+  return boost::regex_replace(root, boost::regex(std::string("file:\\/\\/")), "");
 }
 
 std::string remove_backslash_from_path(const std::string &path){
-  return std::regex_replace(path, std::regex(std::string("\\\\")), "/");
+  return boost::regex_replace(path, boost::regex(std::string("\\\\")), "/");
 }
 
 bool file_exists( const std::string &Filename )
@@ -78,7 +77,7 @@ bool file_exists( const std::string &Filename )
 }
 
 std::string read_token(const ghc::filesystem::path &token_path){
-  std::ifstream key_(token_path, std::ios::in);
+  std::ifstream key_(token_path.string(), std::ios::in);
   std::string key_str_;
   key_ >> key_str_;
   key_.close();

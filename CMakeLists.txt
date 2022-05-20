@@ -24,7 +24,7 @@ ENDIF()
 
 # Define Project
 PROJECT( fdpapi
-    VERSION 0.1.0
+    VERSION 0.2.2
     DESCRIPTION "C++ API for the FAIR Data Pipeline"
     HOMEPAGE_URL "https://github.com/FAIRDataPipeline/cppDataPipeline"
     LANGUAGES CXX C
@@ -63,6 +63,7 @@ INCLUDE( external/curl.cmake )
 INCLUDE( external/yaml_cpp.cmake )
 INCLUDE( external/toml11.cmake )
 INCLUDE( external/ghc.cmake )
+INCLUDE( external/boost_regex.cmake )
 
 # Add the src dirctory compiling it's CMakeLists.txt
 ADD_SUBDIRECTORY( src )
