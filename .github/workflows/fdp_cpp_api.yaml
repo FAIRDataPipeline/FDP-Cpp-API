@@ -129,7 +129,7 @@ jobs:
           sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
       - name: Configure Library
         run: |
-          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
+          cmake -Bbuild
       - name: Build Library
         run: |
           cmake --build build
