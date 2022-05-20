@@ -159,7 +159,7 @@ namespace FairDataPipeline {
                         Logger* _logger;
                         enum LOG_LEVEL _msg_lvl;
 
-                        std::ostringstream _oss;
+                        std::ostringstream _oss{""};
                 };
 
                 static sptr create( enum LOG_LEVEL lvl, Sink::sptr sink, std::string name="" );
