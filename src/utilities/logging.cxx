@@ -50,7 +50,7 @@ namespace FairDataPipeline {
             strftime( buffer, 80, "%Y-%m-%d %H:%M:%S", localtime( &_tv_sec ));
             std::string currentTime( 84, 0 );
 
-            sprintf( &currentTime[0], "%s.%03d", buffer, milli );
+            snprintf( &currentTime[0], 80, "%s.%03d", buffer, milli );
             return std::move( currentTime );
         }
 
