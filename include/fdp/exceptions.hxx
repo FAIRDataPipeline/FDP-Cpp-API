@@ -7,38 +7,32 @@
 namespace FairDataPipeline {
 class config_parsing_error : public std::runtime_error {
 public:
-  using std::runtime_error::runtime_error;
-  explicit config_parsing_error(const std::string& message);
+  explicit config_parsing_error(const std::string& message):std::runtime_error(message){};
 };
 
 class rest_apiquery_error : public std::runtime_error {
 public:
-  using std::runtime_error::runtime_error;
-  explicit rest_apiquery_error(const std::string& message);
+  explicit rest_apiquery_error(const std::string& message):std::runtime_error(message){};
 };
 
 class json_parse_error : public std::runtime_error {
 public:
-  using std::runtime_error::runtime_error;
-  explicit json_parse_error(const std::string& message);
+  explicit json_parse_error(const std::string& message):std::runtime_error(message){};
 };
 
 class validation_error : public std::runtime_error {
 public:
-  using std::runtime_error::runtime_error;
-  explicit validation_error(const std::string& message);
+  explicit validation_error(const std::string& message):std::runtime_error(message){};
 };
 
 class sync_error : public std::runtime_error {
 public:
-  using std::runtime_error::runtime_error;
-  explicit sync_error(const std::string& message);
+  explicit sync_error(const std::string& message):std::runtime_error(message){};
 };
 
 class write_error : public std::runtime_error {
 public:
-  using std::runtime_error::runtime_error;
-  explicit write_error(const std::string& message);
+  explicit write_error(const std::string& message):std::runtime_error(message){};
 };
 
 }; // namespace FairDataPipeline
