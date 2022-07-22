@@ -45,39 +45,34 @@ namespace FairDataPipeline {
  *
  *****************************************************************************/
 double read_point_estimate_from_toml(const ghc::filesystem::path var_address);
+std::string read_distribution_from_toml(const ghc::filesystem::path var_address);
+toml::value read_parameter_from_toml(const ghc::filesystem::path var_address,
+                                     const std::string &parameter);
 
 /**
  * @brief Create an estimate
  * 
  * @tparam T 
  * @param value 
- * @param data_product 
- * @param version_num 
- * @param config 
+ * @param file_path
  * @return ghc::filesystem::path 
  */
 template <typename T>
-ghc::filesystem::path create_estimate(T &value,
-                                      const ghc::filesystem::path &data_product,
-                                      const Versioning::version &version_num,
-                                      const Config *config
+ghc::filesystem::path write_toml_parameter(T &value,
+                                      const std::string &parameter,
+                                      const std::string &component,
+                                      const ghc::filesystem::path file_path
                                       ) {
-  const std::string param_name_ = data_product.stem().string();
-  const std::string namespace_ = config->get_default_output_namespace();
-  const ghc::filesystem::path data_store_ = config->get_data_store();
   const toml::value data_{
-      {param_name_, {{"type", "point-estimate"}, {"value", value}}}};
+      {component, {{"type", parameter}, {"value", value}}}};
 
-  const ghc::filesystem::path output_filename_ =
-      data_store_ / namespace_ / data_product.parent_path() /
-      std::string(version_num.to_string() + ".toml");
   std::ofstream toml_out_;
 
-  if (!ghc::filesystem::exists(output_filename_.parent_path())) {
-    ghc::filesystem::create_directories(output_filename_.parent_path());
+  if (!ghc::filesystem::exists(file_path.parent_path())) {
+    ghc::filesystem::create_directories(file_path.parent_path());
   }
 
-  toml_out_.open(output_filename_.string());
+  toml_out_.open(file_path.string(), std::ios_base::app);
 
   if (!toml_out_) {
     throw std::runtime_error("Failed to open TOML file for writing");
@@ -90,10 +85,22 @@ ghc::filesystem::path create_estimate(T &value,
  
   auto the_logger = logger::get_logger();
   the_logger->debug() 
-      <<  "FileSystem:CreateEstimate: Wrote point estimate to '" << output_filename_.string() << "'";
+      <<  "FileSystem:CreateEstimate: Wrote " << parameter << " to '" << file_path.string() << "'";
 
-  return output_filename_;
+  return file_path;
 }
+
+template <typename T>
+ghc::filesystem::path
+write_point_estimate(T &value, const std::string &component,
+                     const ghc::filesystem::path file_path) {
+  return write_toml_parameter(value, "point-estimate",
+                              component, file_path);
+}
+
+ghc::filesystem::path
+write_distribution(const std::string &value, const std::string &component,
+                     const ghc::filesystem::path file_path);
 
 /**
  * @brief Get the first key of a given toml value

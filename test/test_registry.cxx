@@ -3,7 +3,7 @@
 #endif
 #include "fdp/fdp.hxx"
 #include "fdp/objects/metadata.hxx"
-#include "fdp/registry/data_io.hxx"
+#include "fdp/utilities/data_io.hxx"
 #include "gtest/gtest.h"
 #include <ghc/filesystem.hpp>
 #include <ostream>
