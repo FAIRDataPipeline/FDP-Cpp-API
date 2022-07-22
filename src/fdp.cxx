@@ -172,12 +172,12 @@ DataPipeline::DataPipeline(
         << pimpl_->get_code_run_uuid() << "'";
 }
 
-ghc::filesystem::path FairDataPipeline::DataPipeline::link_read(std::string &data_product){
-    return pimpl_->link_read(data_product);
+std::string FairDataPipeline::DataPipeline::link_read(std::string &data_product){
+    return pimpl_->link_read(data_product).string();
 }
 
-ghc::filesystem::path FairDataPipeline::DataPipeline::link_write(std::string &data_product){
-    return pimpl_->link_write(data_product);
+std::string FairDataPipeline::DataPipeline::link_write(std::string &data_product){
+    return pimpl_->link_write(data_product).string();
 }
 
 void FairDataPipeline::DataPipeline::finalise(){
