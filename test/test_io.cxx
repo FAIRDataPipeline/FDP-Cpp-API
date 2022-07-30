@@ -92,7 +92,7 @@ TEST_F(IOTest, TestTwoComponents) {
 
     write_point_estimate(p_estimate_2, component_2, two_p_estimates_toml);
 
-    double p_estimate_ = read_point_estimate_from_toml(two_p_estimates_toml);
+    double p_estimate_ = read_point_estimate_from_toml(two_p_estimates_toml, component);
     double p_estimate_2_ = read_point_estimate_from_toml(two_p_estimates_toml, component_2);
 
     EXPECT_EQ(p_estimate, p_estimate_);
