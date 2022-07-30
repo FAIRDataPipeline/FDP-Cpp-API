@@ -35,6 +35,11 @@ public:
   explicit write_error(const std::string& message):std::runtime_error(message){};
 };
 
+class toml_error : public std::runtime_error {
+public:
+  explicit toml_error(const std::string& message):std::runtime_error(message){};
+};
+
 }; // namespace FairDataPipeline
 
 #endif

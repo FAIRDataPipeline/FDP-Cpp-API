@@ -26,6 +26,7 @@
 #include "fdp/objects/metadata.hxx"
 #include "fdp/utilities/logging.hxx"
 #include "fdp/utilities/semver.hxx"
+#include "fdp/exceptions.hxx"
 
 namespace FairDataPipeline {
 
@@ -44,10 +45,19 @@ namespace FairDataPipeline {
  *    @snippet `test/test_filesystem.cxx TestTOMLPERead
  *
  *****************************************************************************/
-double read_point_estimate_from_toml(const ghc::filesystem::path var_address);
-std::string read_distribution_from_toml(const ghc::filesystem::path var_address);
-toml::value read_parameter_from_toml(const ghc::filesystem::path var_address,
+double read_point_estimate_from_toml(const ghc::filesystem::path file_path);
+double read_point_estimate_from_toml(const ghc::filesystem::path file_path, const std::string &component);
+toml::value read_parameter_from_toml(const ghc::filesystem::path file_path,
                                      const std::string &parameter);
+toml::value read_parameter_from_toml(const ghc::filesystem::path file_path,
+                                     const std::string &parameter,
+                                     const std::string &component);
+toml::value read_data_from_toml(const ghc::filesystem::path file_path);
+toml::value read_component_from_toml(const ghc::filesystem::path file_path, const std::string &component);
+
+ghc::filesystem::path write_toml_data(ghc::filesystem::path file_path, 
+                                      const std::string &component,
+                                      const toml::value &data);
 
 /**
  * @brief Create an estimate
@@ -63,32 +73,13 @@ ghc::filesystem::path write_toml_parameter(T &value,
                                       const std::string &component,
                                       const ghc::filesystem::path file_path
                                       ) {
+
   const toml::value data_{
       {component, {{"type", parameter}, {"value", value}}}};
-
-  std::ofstream toml_out_;
-
-  if (!ghc::filesystem::exists(file_path.parent_path())) {
-    ghc::filesystem::create_directories(file_path.parent_path());
-  }
-
-  toml_out_.open(file_path.string(), std::ios_base::app);
-
-  if (!toml_out_) {
-    throw std::runtime_error("Failed to open TOML file for writing");
-  }
-
-  toml_out_ << toml::format(data_);
-
-  toml_out_.close();
-
- 
-  auto the_logger = logger::get_logger();
-  the_logger->debug() 
-      <<  "FileSystem:CreateEstimate: Wrote " << parameter << " to '" << file_path.string() << "'";
-
-  return file_path;
+  return write_toml_data(file_path, component, data_);
+  
 }
+
 
 template <typename T>
 ghc::filesystem::path
@@ -98,17 +89,9 @@ write_point_estimate(T &value, const std::string &component,
                               component, file_path);
 }
 
-ghc::filesystem::path
-write_distribution(const std::string &value, const std::string &component,
-                     const ghc::filesystem::path file_path);
+std::string get_first_component(ghc::filesystem::path file_path);
 
-/**
- * @brief Get the first key of a given toml value
- * 
- * @param data_table 
- * @return std::string 
- */
-std::string get_first_key_(const toml::value data_table);
+bool component_exists(ghc::filesystem::path file_path, const std::string &component);
 
 }; // namespace FairDataPipeline
 
