@@ -14,14 +14,6 @@ double read_point_estimate_from_toml(const ghc::filesystem::path file_path) {
   return read_point_estimate_from_toml(file_path, get_first_component(file_path));
 }
 
-std::string read_distribution_from_toml(const ghc::filesystem::path file_path, const std::string &component){
-  return read_parameter_from_toml(file_path, "distribution", component).as_string();
-}
-
-std::string read_distribution_from_toml(const ghc::filesystem::path file_path){
-  return read_parameter_from_toml(file_path, "distribution").as_string();
-}
-
 toml::value read_parameter_from_toml(const ghc::filesystem::path file_path, const std::string &parameter) {
   return read_parameter_from_toml(file_path, parameter, get_first_component(file_path));
 }
