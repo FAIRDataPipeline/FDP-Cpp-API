@@ -184,10 +184,8 @@ TEST_F(IOTest, TestInvalidToml) {
     }     
 
     try{
-        ghc::filesystem::path empty_file( ghc::filesystem::path(TESTDIR) / "data" / "temp" / "empty_file.toml");
-        std::ofstream output_file;
-        output_file.open(empty_file.string());
-        output_file.close();
+        ghc::filesystem::path empty_file = ghc::filesystem::path(TESTDIR) / "data" / "temp" / "empty_file.toml";
+        std::ofstream output_file(empty_file.string());
         read_point_estimate_from_toml(empty_file);
         FAIL();
     }
@@ -199,6 +197,6 @@ TEST_F(IOTest, TestInvalidToml) {
     }
     catch(...){
         FAIL() << "Exception Thrown" << std::endl;
-    }     
+    }    
 
 }

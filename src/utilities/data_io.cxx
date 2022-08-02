@@ -23,6 +23,10 @@ toml::value read_data_from_toml(const ghc::filesystem::path file_path){
       throw toml_error("File '" + file_path.string() +
                               "' could not be opened as it does not exist");
     }
+  if (ghc::filesystem::is_empty(file_path)) {
+    throw toml_error("File '" + file_path.string() +
+                             "' appears to be empty");
+  }
 
   auto toml_data_ = toml::parse(file_path.string());
   return toml_data_;
@@ -95,6 +99,10 @@ std::string get_first_component(const ghc::filesystem::path &file_path){
     throw toml_error("File '" + file_path.string() +
                              "' could not be opened as it does not exist");
   }
+  if (ghc::filesystem::is_empty(file_path)) {
+    throw toml_error("File '" + file_path.string() +
+                             "' appears to be empty");
+  }
   const auto toml_data_ = toml::parse(file_path.string());
 
   return toml_data_.as_table().begin()->first;
@@ -104,6 +112,10 @@ bool component_exists(const ghc::filesystem::path &file_path, const std::string 
   if(!ghc::filesystem::exists(file_path))
   {
     return false;
+  }
+  if (ghc::filesystem::is_empty(file_path)) {
+    throw toml_error("File '" + file_path.string() +
+                             "' appears to be empty");
   }
   const auto toml_data_ = toml::parse(file_path.string());
   if(!toml_data_.contains(component)){
@@ -115,4 +127,5 @@ bool component_exists(const ghc::filesystem::path &file_path, const std::string 
   }
   
 }
+
 }; // namespace FairDataPipeline
