@@ -7,37 +7,37 @@
 namespace FairDataPipeline {
 class config_parsing_error : public std::runtime_error {
 public:
-  explicit config_parsing_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 class rest_apiquery_error : public std::runtime_error {
 public:
-  explicit rest_apiquery_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 class json_parse_error : public std::runtime_error {
 public:
-  explicit json_parse_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 class validation_error : public std::runtime_error {
 public:
-  explicit validation_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 class sync_error : public std::runtime_error {
 public:
-  explicit sync_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 class write_error : public std::runtime_error {
 public:
-  explicit write_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 class toml_error : public std::runtime_error {
 public:
-  explicit toml_error(const std::string& message):std::runtime_error(message){};
+  using std::runtime_error::runtime_error;
 };
 
 }; // namespace FairDataPipeline

@@ -89,9 +89,9 @@ write_point_estimate(T &value, const std::string &component,
                               component, file_path);
 }
 
-std::string get_first_component(ghc::filesystem::path file_path);
+std::string get_first_component(const ghc::filesystem::path &file_path);
 
-bool component_exists(ghc::filesystem::path file_path, const std::string &component);
+bool component_exists(const ghc::filesystem::path &file_path, const std::string &component);
 
 }; // namespace FairDataPipeline
 

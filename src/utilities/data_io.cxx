@@ -20,7 +20,7 @@ toml::value read_parameter_from_toml(const ghc::filesystem::path file_path, cons
 
 toml::value read_data_from_toml(const ghc::filesystem::path file_path){
   if (!ghc::filesystem::exists(file_path)) {
-      throw std::runtime_error("File '" + file_path.string() +
+      throw toml_error("File '" + file_path.string() +
                               "' could not be opened as it does not exist");
     }
 
@@ -36,10 +36,14 @@ toml::value read_component_from_toml(const ghc::filesystem::path file_path, cons
 
 
 toml::value read_parameter_from_toml(const ghc::filesystem::path file_path, const std::string &parameter, const std::string &component) {
-  
+ 
   toml::value toml_data_ = read_data_from_toml(file_path);
 
-  if (!toml::get<toml::table>(toml_data_).at(component).contains("type")) {
+  if(!component_exists(file_path, component)){
+    throw toml_error("Component " + component + "does not exist");
+  }
+
+  if (!toml_data_.at(component).contains("type")) {
     throw toml_error("Expected 'type' tag but none found");
   }
 
@@ -48,7 +52,7 @@ toml::value read_parameter_from_toml(const ghc::filesystem::path file_path, cons
       parameter) {
     throw toml_error(
         "Expected "+ parameter +" for type but got '" +
-        static_cast<std::string>(toml_data_.at("type").as_string()) + "'");
+        static_cast<std::string>(toml_data_.at(component).at("type").as_string()) + "'");
   }
 
   return toml_data_.at(component).at("value");
@@ -73,10 +77,9 @@ ghc::filesystem::path write_toml_data(ghc::filesystem::path file_path,
   toml_out_.open(file_path.string(), std::ios_base::app);
 
   if (!toml_out_) {
-    throw std::runtime_error("Failed to open TOML file for writing");
+    throw toml_error("Failed to open TOML file for writing");
   }
 
-  //toml_out_ << toml::format(data_);
   toml_out_ << data;
 
   toml_out_.close();
@@ -87,7 +90,7 @@ ghc::filesystem::path write_toml_data(ghc::filesystem::path file_path,
   return file_path;
 }
 
-std::string get_first_component(ghc::filesystem::path file_path){
+std::string get_first_component(const ghc::filesystem::path &file_path){
   if (!ghc::filesystem::exists(file_path)) {
     throw toml_error("File '" + file_path.string() +
                              "' could not be opened as it does not exist");
@@ -97,7 +100,7 @@ std::string get_first_component(ghc::filesystem::path file_path){
   return toml_data_.as_table().begin()->first;
 }
 
-bool component_exists(ghc::filesystem::path file_path, const std::string &component){
+bool component_exists(const ghc::filesystem::path &file_path, const std::string &component){
   if(!ghc::filesystem::exists(file_path))
   {
     return false;
