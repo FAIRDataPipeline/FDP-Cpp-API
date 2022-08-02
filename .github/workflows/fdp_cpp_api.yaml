@@ -109,3 +109,27 @@ jobs:
           cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
       - name: Compile FDP-Cpp-API
         run: cmake --build build --config=Release
+  Build_GCC_4_8:
+    name: Build GCC 4.8
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with: 
+          python-version: "3.9"
+          architecture: "x64"
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 4.8
+          platform: x64
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
+      - name: Configure Library
+        run: |
+          cmake -Bbuild
+      - name: Build Library
+        run: |
+          cmake --build build

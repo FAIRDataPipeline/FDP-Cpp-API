@@ -7,34 +7,37 @@
 namespace FairDataPipeline {
 class config_parsing_error : public std::runtime_error {
 public:
-  config_parsing_error(const std::string& message)
-      : std::runtime_error(message) {}
+  using std::runtime_error::runtime_error;
 };
 
 class rest_apiquery_error : public std::runtime_error {
 public:
-  rest_apiquery_error(const std::string& message)
-      : std::runtime_error(message) {}
+  using std::runtime_error::runtime_error;
 };
 
 class json_parse_error : public std::runtime_error {
 public:
-  json_parse_error(const std::string& message) : std::runtime_error(message) {}
+  using std::runtime_error::runtime_error;
 };
 
 class validation_error : public std::runtime_error {
 public:
-  validation_error(const std::string& message) : std::runtime_error(message) {}
+  using std::runtime_error::runtime_error;
 };
 
 class sync_error : public std::runtime_error {
 public:
-  sync_error(const std::string& message) : std::runtime_error(message) {}
+  using std::runtime_error::runtime_error;
 };
 
 class write_error : public std::runtime_error {
 public:
-  write_error(const std::string& message) : std::runtime_error(message) {}
+  using std::runtime_error::runtime_error;
+};
+
+class toml_error : public std::runtime_error {
+public:
+  using std::runtime_error::runtime_error;
 };
 
 }; // namespace FairDataPipeline

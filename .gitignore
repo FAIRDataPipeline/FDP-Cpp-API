@@ -6,3 +6,4 @@ test/data_store/
 data_store/
 .fair
 venv/
+test/data/temp/
