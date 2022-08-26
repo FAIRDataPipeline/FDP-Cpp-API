@@ -104,6 +104,8 @@ public:
 
   Json::Value post_storage_root(Json::Value &post_data, const std::string &token);
 
+  Json::Value post_file_type(Json::Value &post_data, const std::string &token);
+
   Json::Value get_by_json_query(const std::string &addr_path,
                                   Json::Value &query_data,
                                   long expected_response = 200,

@@ -267,7 +267,7 @@ void FairDataPipeline::Config::initialise(RESTAPI api_location) {
   Json::Value  config_file_type_value;
   config_file_type_value["name"] = "yaml";
   config_file_type_value["extension"] = "yaml";
-  Json::Value config_file_type_url_ = api_->post("file_type", config_file_type_value, token_)["url"];
+  Json::Value config_file_type_url_ = api_->post_file_type(config_file_type_value, token_)["url"];
 
   config_value_["file_type"] = config_file_type_url_;
 
@@ -304,7 +304,7 @@ void FairDataPipeline::Config::initialise(RESTAPI api_location) {
   Json::Value script_file_type_value_;
   script_file_type_value_["name"] = "C++ Submission Script" + script_file_path_.extension().string();
   script_file_type_value_["extension"] = script_file_path_.extension().string();
-  Json::Value script_file_type_url_ = api_->post("file_type", script_file_type_value_, token_)["url"];
+  Json::Value script_file_type_url_ = api_->post_file_type(script_file_type_value_, token_)["url"];
 
   Json::Value script_value_;
   script_value_["description"] = "Working script location in datastore";
@@ -667,7 +667,7 @@ void FairDataPipeline::Config::finalise(){
       Json::Value filetypeData;
       filetypeData["name"] = extension;
       filetypeData["extension"] = extension;
-      ApiObject::sptr filetypeObj = ApiObject::from_json(api_->post("file_type", filetypeData, token_));
+      ApiObject::sptr filetypeObj = ApiObject::from_json(api_->post_file_type(filetypeData, token_));
 
       Json::Value namespaceData;
       namespaceData["name"] = currentWrite.get_use_namespace();
