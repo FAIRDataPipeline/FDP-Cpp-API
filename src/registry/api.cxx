@@ -217,6 +217,21 @@ Json::Value API::post_storage_root(Json::Value &post_data, const std::string &to
   return API::post_patch_request("storage_root", post_data, token, 201, false);
 }
 
+Json::Value API::post_file_type(Json::Value &post_data, const std::string &token){
+  if (!post_data["name"]){
+    logger::get_logger()->error() << "Error: Post Data does not contain a file extension";
+    throw rest_apiquery_error("Failed to post file_type");
+  }
+  post_data["name"] = boost::regex_replace(post_data["name"].asString(), boost::regex("."), "");
+  Json::Value _file_type_query;
+  _file_type_query["name"] = post_data["name"];
+  Json::Value _file_type_exists = get_by_json_query("file_type", _file_type_query);
+  if (_file_type_exists) {
+    return _file_type_exists[0];
+  }
+  return post("file_type", post_data, token);
+}
+
 Json::Value API::patch(std::string addr_path, Json::Value &post_data,
                        const std::string &token, long expected_response) {
   return API::post_patch_request(addr_path, post_data, token, expected_response, true);
