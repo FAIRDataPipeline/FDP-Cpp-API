@@ -44,9 +44,9 @@ jobs:
           pip3 install fair-cli
           cmake -Bbuild -DCPPDATAPIPELINEREF="heads/${GITHUB_REF/refs\/heads\//}"
           cmake --build build
-          fair init --ci
-          fair pull data/seirs_config.yaml
-          fair run data/seirs_config.yaml          
+          fair init --ci --local
+          fair pull --local data/seirs_config.yaml
+          fair run --local data/seirs_config.yaml          
         if: startsWith(github.ref, 'refs/tags/') != true
       - name: Build and run seirs example on tagged release
         run: |
@@ -56,7 +56,7 @@ jobs:
           pip3 install fair-cli
           cmake -Bbuild -DCPPDATAPIPELINEREF="tags/${GITHUB_REF/refs\/tags\//}"
           cmake --build build
-          fair init --ci
-          fair pull data/seirs_config.yaml
-          fair run data/seirs_config.yaml          
+          fair init --ci --local
+          fair pull --local data/seirs_config.yaml
+          fair run --local data/seirs_config.yaml          
         if: startsWith(github.ref, 'refs/tags/')
