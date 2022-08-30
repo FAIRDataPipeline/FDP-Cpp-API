@@ -24,7 +24,7 @@ ENDIF()
 
 # Define Project
 PROJECT( fdpapi
-    VERSION 0.2.5
+    VERSION 0.2.6
     DESCRIPTION "C++ API for the FAIR Data Pipeline"
     HOMEPAGE_URL "https://github.com/FAIRDataPipeline/cppDataPipeline"
     LANGUAGES CXX C
