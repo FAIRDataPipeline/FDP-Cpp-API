@@ -6,7 +6,7 @@ MESSAGE( STATUS "\tURL: ${TOML11_URL}" )
 
 include(FetchContent)
 FetchContent_Declare(
-    TOMLCPP
+    toml11
     URL ${TOML11_URL}
 )
-FetchContent_MakeAvailable(TOMLCPP)
+FetchContent_MakeAvailable(toml11)

@@ -4,7 +4,7 @@ MESSAGE( STATUS "[JsonCPP]" )
 MESSAGE( STATUS "\tJsonCpp Will be installed." )
 MESSAGE( STATUS "\tURL: ${JSONCPP_URL}" )
 
-SET (JSONCPP_WITH_TESTS OFF CACHE INTERNAL "Don't Build cpp tests")
+SET (JSONCPP_WITH_TESTS OFF CACHE INTERNAL "Don't build json-cpp tests")
 
 include(FetchContent)
 FetchContent_Declare(
