@@ -104,3 +104,16 @@ install(
     DESTINATION 
         ${CMAKE_INSTALL_LIBDIR}/cmake/cppDataPipeline
 )
+
+# Configure the .in pkg-config file and install
+CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/pkg-config/cppDataPipeline.pc.in cppDataPipeline.pc @ONLY
+)
+
+INSTALL(
+    FILES 
+        ${PROJECT_BINARY_DIR}/cppDataPipeline.pc
+    DESTINATION
+        ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)
+
