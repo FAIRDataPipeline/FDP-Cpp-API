@@ -7,7 +7,9 @@ message(STATUS "\tURL: ${YAML_CPP_GIT_REPOSITORY}")
 message(STATUS "\tCOMMIT HASH: ${YAML_CPP_GIT_TAG}")
 
 set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "Build yaml-cpp tests")
-set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "Build .so for yaml-cpp")
+if(BUILD_SHARED_LIBS)
+    set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "Build .so for yaml-cpp")
+endif()
 set(YAML_CPP_INSTALL ON CACHE INTERNAL "Include export targets for installation")
 
 FetchContent_Declare(

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 # Define Project
-project(cppDataPipeline
+project(fdpapi
     VERSION 0.2.6
     DESCRIPTION "C++ API for the FAIR Data Pipeline"
     HOMEPAGE_URL "https://github.com/FAIRDataPipeline/cppDataPipeline"
@@ -12,50 +12,49 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
 
+# json-cpp library forces BUILD_SHARED_LIBS to ON by default -- fixing that here.
+option(BUILD_SHARED_LIBS "Build .so library instead of .a" OFF)
+
+#  Disable Building in Debug as HD5 
+get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(isMultiConfig)
+    set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
+    message("Multi-Config Generator found, please ensure you are building with a realease configuration")
+else()
+    if(NOT CMAKE_BUILD_TYPE)
+        message("Defaulting to release build.")
+        set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+    endif()
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY HELPSTRING "Choose the type of build")
+    # set the valid options for cmake-gui drop-down list
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release")
+endif()
+
+# Set Output Directories to avoid issues on multi release compilers
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # Default Options for Tests and Code Coverage
-option(CPP_DATA_PIPELINE_BUILD_TESTS  "Build unit tests" OFF)
-option(CPP_DATA_PIPELINE_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
+option(FDPAPI_BUILD_TESTS  "Build unit tests" OFF)
+option(FDPAPI_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
 
 # Set Module Path to include external directory
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/external")
 
 # Include external library files
-include(cmake/jsoncpp.cmake)
-include(cmake/digestpp.cmake)
-include(cmake/curl.cmake)
-include(cmake/yaml_cpp.cmake)
-include(cmake/toml11.cmake)
-include(cmake/ghc.cmake)
-include(cmake/boost_regex.cmake)
+include(external/jsoncpp.cmake)
+include(external/curl.cmake)
+include(external/yaml_cpp.cmake)
+include(external/toml11.cmake)
+include(external/ghc.cmake)
+include(external/boost_regex.cmake)
+include(external/digestpp.cmake)
 
 # Define and install library
 add_subdirectory(./src)
 
 # Compile Tests if specified
-if(CPP_DATA_PIPELINE_BUILD_TESTS)
-    # Include CTest for testing
-    include(CTest)
-    # Add the test dirctory compiling it's CMakeLists.txt
+if(FDPAPI_BUILD_TESTS)
     add_subdirectory(test)
-endif()
-
-if(CPP_DATA_PIPELINE_CODE_COVERAGE)
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -O0 --coverage")
-    message("CXX Flags: ${CMAKE_CXX_FLAGS}")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
-endif()
-
-# Compile Code Coverage if Specified with Tests
-if( CPP_DATA_PIPELINE_CODE_COVERAGE AND CPP_DATA_PIPELINE_BUILD_TESTS )
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
-        include(CodeCoverage)
-        APPEND_COVERAGE_COMPILER_FLAGS()
-        setup_target_for_coverage_gcovr_sonar(
-            NAME coverage
-            EXECUTABLE bin/cppDataPipeline-tests
-            DEPENDENCIES cppDataPipeline-tests
-            BASE_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
-    endif()
 endif()

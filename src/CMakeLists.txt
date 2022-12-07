@@ -1,4 +1,4 @@
-set(CPP_DATA_PIPELINE_SOURCE_FILES
+set(FDPAPI_SOURCE_FILES
     ../include/fdp/fdp.hxx
     ../include/fdp/exceptions.hxx
     ../include/fdp/objects/api_object.hxx
@@ -24,7 +24,7 @@ set(CPP_DATA_PIPELINE_SOURCE_FILES
 )
 
 if(WIN32)
-    list(APPEND CPP_DATA_PIPELINE_SOURCE_FILES
+    list(APPEND FDPAPI_SOURCE_FILES
         ../include/fdp/windows_sys/time.cpp 
         ../include/fdp/windows_sys/times.h 
         ../include/fdp/windows_sys/time.h 
@@ -32,40 +32,50 @@ if(WIN32)
 endif()
 
 # Add the project library using SRC_FILES
-add_library(cppDataPipeline SHARED ${CPP_DATA_PIPELINE_SOURCE_FILES})
-add_library(cppDataPipeline::cppDataPipeline ALIAS cppDataPipeline)
+add_library(fdpapi ${FDPAPI_SOURCE_FILES})
+add_library(fdpapi::fdpapi ALIAS fdpapi)
 
 # Set libraries compiled in debug mode to end in 'd'
-set_target_properties(cppDataPipeline PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties(fdpapi PROPERTIES DEBUG_POSTFIX "d")
 
 # Set the public header
 # FIXME This line breaks installation. How is it supposed to work?
-#set_target_properties(cppDataPipeline PROPERTIES PUBLIC_HEADER "${CPP_DATA_PIPELINE_CODE_COVERAGE}")
+#set_target_properties(fdpapi PROPERTIES PUBLIC_HEADER "${FDPAPI_CODE_COVERAGE}")
 
-target_compile_features(cppDataPipeline PUBLIC cxx_std_11)
+target_compile_features(fdpapi PUBLIC cxx_std_11)
+#if(FDPAPI_CODE_COVERAGE)
+#  target_compile_options(fdpapi PUBLIC -O0 -g --coverage)
+#  target_link_libraries(fdpapi PUBLIC --coverage)
+#endif()
+
 
 target_include_directories(
-    cppDataPipeline 
+    fdpapi 
     PUBLIC
-    $<BUILD_INTERFACE:${cppDataPipeline_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${fdpapi_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 # Dependencies
-target_link_libraries(cppDataPipeline PRIVATE toml11::toml11)
-target_link_libraries(cppDataPipeline PRIVATE jsoncpp_lib)
-target_link_libraries(cppDataPipeline PRIVATE digestpp)  
-target_link_libraries(cppDataPipeline PRIVATE boost_regex)
-target_link_libraries(cppDataPipeline PRIVATE ${CURL_LIBRARIES})
-target_link_libraries(cppDataPipeline PRIVATE yaml-cpp)
+target_link_libraries(fdpapi PRIVATE toml11::toml11)
+target_link_libraries(fdpapi PRIVATE digestpp::digestpp)
+target_link_libraries(fdpapi PRIVATE Boost::regex)
+target_link_libraries(fdpapi PRIVATE ${CURL_LIBRARIES})
+target_link_libraries(fdpapi PRIVATE yaml-cpp)
+if(BUILD_SHARED_LIBS)
+    target_link_libraries(fdpapi PRIVATE jsoncpp_lib)
+else()
+    target_link_libraries(fdpapi PRIVATE jsoncpp_static)
+endif()
 
 # ghc_filesystem is included at the top-level header file -- needs public linking
-target_link_libraries(cppDataPipeline PUBLIC ghc_filesystem)
+target_link_libraries(fdpapi PUBLIC ghcFilesystem::ghc_filesystem)
+
 
 # Set rules for installing targets
-set(cppDataPipeline_targets cppDataPipeline)
-install(TARGETS ${cppDataPipeline_targets}
-        EXPORT cppDataPipelineTargets
+set(fdpapi_targets fdpapi)
+install(TARGETS ${fdpapi_targets}
+        EXPORT fdpapiTargets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -74,10 +84,10 @@ install(TARGETS ${cppDataPipeline_targets}
 
 # Install export file, which contains code to allow other projects to import this project
 install(
-    EXPORT cppDataPipelineTargets
-    FILE cppDataPipelineTargets.cmake
-    NAMESPACE cppDataPipeline::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cppDataPipeline
+    EXPORT fdpapiTargets
+    FILE fdpapiTargets.cmake
+    NAMESPACE fdpapi::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
 )
 
 # Install this project's include dir, so projects importing it can access it
@@ -85,13 +95,13 @@ install(DIRECTORY ../include DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Create files that allow installed project to be discovered using find_package
 configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/cmake/cppDataPipelineConfig.cmake.in"
-    "${PROJECT_BINARY_DIR}/cppDataPipelineConfig.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cppDataPipeline
+    "${PROJECT_SOURCE_DIR}/cmake_modules/fdpapiConfig.cmake.in"
+    "${PROJECT_BINARY_DIR}/fdpapiConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
 )
 
 write_basic_package_version_file(
-    "${PROJECT_BINARY_DIR}/cppDataPipelineConfigVersion.cmake"
+    "${PROJECT_BINARY_DIR}/fdpapiConfigVersion.cmake"
     VERSION  ${PROJECT_VERSION}
     COMPATIBILITY SameMinorVersion
 )
@@ -99,20 +109,20 @@ write_basic_package_version_file(
 # Specify where to install the config files we generated
 install(
     FILES 
-        "${PROJECT_BINARY_DIR}/cppDataPipelineConfig.cmake"
-        "${PROJECT_BINARY_DIR}/cppDataPipelineConfigVersion.cmake"
+        "${PROJECT_BINARY_DIR}/fdpapiConfig.cmake"
+        "${PROJECT_BINARY_DIR}/fdpapiConfigVersion.cmake"
     DESTINATION 
-        ${CMAKE_INSTALL_LIBDIR}/cmake/cppDataPipeline
+        ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
 )
 
 # Configure the .in pkg-config file and install
 CONFIGURE_FILE(
-    ${PROJECT_SOURCE_DIR}/pkg-config/cppDataPipeline.pc.in cppDataPipeline.pc @ONLY
+    ${PROJECT_SOURCE_DIR}/pkg-config/fdpapi.pc.in ${PROJECT_BINARY_DIR}/fdpapi.pc @ONLY
 )
 
 INSTALL(
     FILES 
-        ${PROJECT_BINARY_DIR}/cppDataPipeline.pc
+        ${PROJECT_BINARY_DIR}/fdpapi.pc
     DESTINATION
         ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )

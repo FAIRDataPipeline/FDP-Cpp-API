@@ -1,28 +1,31 @@
-FIND_PACKAGE( Threads REQUIRED )
+find_package(Threads REQUIRED)
+
+# Include CTest for testing
+include(CTest)
 
 # Enable Testing to ensure testing works
-ENABLE_TESTING()
+enable_testing()
 
 # Set the TESTDIR in the cmake CXX flags
-SET( CMAKE_CXX_FLAGS "-DTESTDIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}\\\" ${CMAKE_CXX_FLAGS}" )
+set(CMAKE_CXX_FLAGS "-DTESTDIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}\\\" ${CMAKE_CXX_FLAGS}")
 
 # Set Test Name
-SET( TEST_NAME ${FDPAPI}-tests )
+set(TEST_NAME fdpapi-tests)
 
 # Assume built-in pthreads on MacOS
-IF( APPLE )
-    SET( CMAKE_THREAD_LIBS_INIT "-lpthread" )
-    SET( CMAKE_HAVE_THREADS_LIBRARY 1 )
-    SET( CMAKE_USE_WIN32_THREADS_INIT 0 )
-    SET( CMAKE_USE_PTHREADS_INIT 1 )
-    SET( THREADS_PREFER_PTHREAD_FLAG ON )
-ENDIF()
+if(APPLE)
+    set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+    set(CMAKE_HAVE_THREADS_LIBRARY 1)
+    set(CMAKE_USE_WIN32_THREADS_INIT 0)
+    set(CMAKE_USE_PTHREADS_INIT 1)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+endif()
 
 # Use win32 threads on windows, disabling pthreads in gtest
-IF( WIN32 )
+if(WIN32)
     option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
     option(gtest_disable_pthreads "Disable uses of pthreads in gtest." ON)
-ENDIF()
+endif()
 
 # Get google test suit
 include(FetchContent)
@@ -35,31 +38,57 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Find all files matching test naming (test_<name>.cxx)
-FILE(GLOB_RECURSE src_unit CONFIGURE_DEPENDS "test_*.cxx")
+file(GLOB_RECURSE src_unit CONFIGURE_DEPENDS "test_*.cxx")
 
 # Add the test files to the executable
-ADD_EXECUTABLE( ${TEST_NAME} ${src_unit} )
+add_executable(fdpapi-tests ${src_unit})
 
 # Add compile options to tests
-ADD_COMPILE_OPTIONS( ${TEST_NAME} ${BUILD_TYPE_COMPILE_FLAGS} )
+add_compile_options(fdpapi-tests ${BUILD_TYPE_COMPILE_FLAGS})
 
 # Add includes to tests
-TARGET_INCLUDE_DIRECTORIES( ${TEST_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include
-                            ${TEST_NAME} PUBLIC ${pybind11_INCLUDE_DIRS}
-                            ${TEST_NAME} PUBLIC ${PYTHON_INCLUDE_DIRS})
+target_include_directories(fdpapi-tests PUBLIC ${pybind11_INCLUDE_DIRS})
+target_include_directories(fdpapi-tests PUBLIC ${PYTHON_INCLUDE_DIRS})
 
-MESSAGE(STATUS "----- Configuring Test Build -----")
-MESSAGE(STATUS "[Libraries]:")
-MESSAGE(STATUS "\tAPI C++ BINDINGS: ${CMAKE_CURRENT_SOURCE_DIR}")
-MESSAGE(STATUS "\tGTEST: ${GTEST_INCLUDE_DIRS}")
-MESSAGE(STATUS "\tGMOCK: ${GMOCK_INCLUDE_DIRS}")
-MESSAGE(STATUS "\tFLAGS: ${CMAKE_CXX_FLAGS}")
-MESSAGE(STATUS "----------------------------------")
+message(STATUS "----- Configuring Test Build -----")
+message(STATUS "[Libraries]:")
+message(STATUS "\tAPI C++ BINDINGS: ${CMAKE_CURRENT_SOURCE_DIR}")
+message(STATUS "\tGTEST: ${GTEST_INCLUDE_DIRS}")
+message(STATUS "\tGMOCK: ${GMOCK_INCLUDE_DIRS}")
+message(STATUS "\tFLAGS: ${CMAKE_CXX_FLAGS}")
+message(STATUS "----------------------------------")
 
-# Link gtests with tests
-TARGET_LINK_LIBRARIES( ${TEST_NAME} PRIVATE ${FDPAPI} gtest gtest_main)
+# Dependencies
+target_link_libraries(fdpapi-tests PRIVATE fdpapi::fdpapi)
+target_link_libraries(fdpapi-tests PRIVATE gtest gtest_main)
+
+target_link_libraries(fdpapi-tests PRIVATE toml11::toml11)
+target_link_libraries(fdpapi-tests PRIVATE digestpp)  
+target_link_libraries(fdpapi-tests PRIVATE boost_regex)
+target_link_libraries(fdpapi-tests PRIVATE ${CURL_LIBRARIES})
+target_link_libraries(fdpapi-tests PRIVATE yaml-cpp)
+if(BUILD_SHARED_LIBS)
+    target_link_libraries(fdpapi-tests PRIVATE jsoncpp_lib)
+else()
+    target_link_libraries(fdpapi-tests PRIVATE jsoncpp_static)
+endif()
 
 # Include GoogleTest Library
-INCLUDE( GoogleTest )
+include(GoogleTest)
 # Use GoogleTest Libary to Discover the tests
-gtest_discover_tests( ${TEST_NAME} )
+gtest_discover_tests(fdpapi-tests)
+
+# Compile Code Coverage if Specified with Tests
+if(FDPAPI_CODE_COVERAGE)
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
+        include(CodeCoverage)
+        append_coverage_compiler_flags()
+        setup_target_for_coverage_gcovr_sonar(
+            NAME coverage
+            EXECUTABLE bin/fdpapi-tests
+            DEPENDENCIES fdpapi-tests
+            BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
+        )
+    endif()
+endif()
