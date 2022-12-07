@@ -20,7 +20,7 @@
 #include <chrono>
 #include <boost/regex.hpp>
 
-#include "digestpp.hpp"
+#include "digestpp/digestpp.hpp"
 
 #ifdef _WIN32
    #include <io.h> 

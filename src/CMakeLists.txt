@@ -91,7 +91,7 @@ install(
 )
 
 # Install this project's include dir, so projects importing it can access it
-install(DIRECTORY ../include DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY ../include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Create files that allow installed project to be discovered using find_package
 configure_package_config_file(
