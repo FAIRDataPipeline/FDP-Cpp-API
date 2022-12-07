@@ -1,3 +1,5 @@
+project("digestpp" VERSION 0.1.0)
+
 set(DIGESTCPP_URL "https://github.com/kerukuro/digestpp.git")
 set(DIGESTCPP_COMMIT "34ff2eeae397ed744d972d86b5a20f603b029fbd")
 
@@ -51,3 +53,38 @@ install(
 
 # Install this project's include dir, so projects importing it can access it
 install(DIRECTORY ${digestpp_SOURCE_DIR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# Create files that allow installed project to be discovered using find_package
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/digestppConfig.cmake.in"
+    "${PROJECT_BINARY_DIR}/digestppConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/digestpp
+)
+
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/digestppConfigVersion.cmake"
+    VERSION  ${PROJECT_VERSION}
+    COMPATIBILITY SameMinorVersion
+)
+
+# Specify where to install the config files we generated
+install(
+    FILES 
+        "${PROJECT_BINARY_DIR}/digestppConfig.cmake"
+        "${PROJECT_BINARY_DIR}/digestppConfigVersion.cmake"
+    DESTINATION 
+        ${CMAKE_INSTALL_LIBDIR}/cmake/digestpp
+)
+
+# Configure the .in pkg-config file and install
+CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/digestpp.pc.in ${PROJECT_BINARY_DIR}/digestpp.pc @ONLY
+)
+
+INSTALL(
+    FILES 
+        ${PROJECT_BINARY_DIR}/digestpp.pc
+    DESTINATION
+        ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)
+

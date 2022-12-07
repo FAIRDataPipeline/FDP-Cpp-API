@@ -49,7 +49,7 @@ include(external/yaml_cpp.cmake)
 include(external/toml11.cmake)
 include(external/ghc.cmake)
 include(external/boost_regex.cmake)
-include(external/digestpp.cmake)
+add_subdirectory(external/digestpp)
 
 # Define and install library
 add_subdirectory(./src)
