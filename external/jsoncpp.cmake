@@ -6,7 +6,6 @@ MESSAGE( STATUS "\tURL: ${JSONCPP_URL}" )
 
 SET (JSONCPP_WITH_TESTS OFF CACHE INTERNAL "Don't build json-cpp tests")
 
-include(FetchContent)
 FetchContent_Declare(
     JsonCpp
     URL ${JSONCPP_URL}

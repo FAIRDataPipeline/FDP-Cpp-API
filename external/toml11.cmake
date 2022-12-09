@@ -4,7 +4,6 @@ MESSAGE( STATUS "[TOML 11]" )
 MESSAGE( STATUS "\tTOML 11 Will be installed." )
 MESSAGE( STATUS "\tURL: ${TOML11_URL}" )
 
-include(FetchContent)
 FetchContent_Declare(
     toml11
     URL ${TOML11_URL}
