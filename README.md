@@ -30,6 +30,20 @@ $ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
 $ cmake --build build --config=Release
 ```
 
+The library can be installed system-wide using:
+
+```
+$ cmake --build build --target install
+```
+
+After doing so, the library can be discovered and utilised in other CMake projects
+using:
+
+```
+find_package(fdpapi)
+target_link_libraries(my_project PRIVATE fdpapi::fdpapi)
+```
+
 ## Outline
 The main class the user will interact with is `DataPipeline` which has only the required methods such as `link_read` etc. This class has a member which is a pointer to an underlying `DataPipelineImpl_` class which performs the various procedures required to handle the data. A logger has been used to give as much feedback to the user as possible, the verbosity being handled by a log level argument.
 
