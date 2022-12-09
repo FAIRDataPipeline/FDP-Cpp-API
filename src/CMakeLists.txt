@@ -43,11 +43,6 @@ set_target_properties(fdpapi PROPERTIES DEBUG_POSTFIX "d")
 #set_target_properties(fdpapi PROPERTIES PUBLIC_HEADER "${FDPAPI_CODE_COVERAGE}")
 
 target_compile_features(fdpapi PUBLIC cxx_std_11)
-#if(FDPAPI_CODE_COVERAGE)
-#  target_compile_options(fdpapi PUBLIC -O0 -g --coverage)
-#  target_link_libraries(fdpapi PUBLIC --coverage)
-#endif()
-
 
 target_include_directories(
     fdpapi 
