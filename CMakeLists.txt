@@ -12,6 +12,11 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
 
+# Default Options for Tests, Code Coverage, installation
+option(FDPAPI_BUILD_TESTS  "Build unit tests" OFF)
+option(FDPAPI_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
+option(FDPAPI_WITH_INSTALL "Allow project to be installable" ON)
+
 # json-cpp library forces BUILD_SHARED_LIBS to ON by default -- fixing that here.
 option(BUILD_SHARED_LIBS "Build .so library instead of .a" OFF)
 
@@ -35,9 +40,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Default Options for Tests and Code Coverage
-option(FDPAPI_BUILD_TESTS  "Build unit tests" OFF)
-option(FDPAPI_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
 
 # Set Module Path to include external directory
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/external")

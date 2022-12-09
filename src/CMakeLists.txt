@@ -68,57 +68,58 @@ target_link_libraries(fdpapi PUBLIC ghcFilesystem::ghc_filesystem)
 
 
 # Set rules for installing targets
-set(fdpapi_targets fdpapi)
-install(TARGETS ${fdpapi_targets}
+if(FDPAPI_WITH_INSTALL)
+    set(fdpapi_targets fdpapi)
+    install(TARGETS ${fdpapi_targets}
+            EXPORT fdpapiTargets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    # Install export file, which contains code to allow other projects to import this project
+    install(
         EXPORT fdpapiTargets
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+        FILE fdpapiTargets.cmake
+        NAMESPACE fdpapi::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
+    )
 
-# Install export file, which contains code to allow other projects to import this project
-install(
-    EXPORT fdpapiTargets
-    FILE fdpapiTargets.cmake
-    NAMESPACE fdpapi::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
-)
+    # Install this project's include dir, so projects importing it can access it
+    install(DIRECTORY ../include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-# Install this project's include dir, so projects importing it can access it
-install(DIRECTORY ../include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-# Create files that allow installed project to be discovered using find_package
-configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/cmake_modules/fdpapiConfig.cmake.in"
-    "${PROJECT_BINARY_DIR}/fdpapiConfig.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
-)
-
-write_basic_package_version_file(
-    "${PROJECT_BINARY_DIR}/fdpapiConfigVersion.cmake"
-    VERSION  ${PROJECT_VERSION}
-    COMPATIBILITY SameMinorVersion
-)
-
-# Specify where to install the config files we generated
-install(
-    FILES 
+    # Create files that allow installed project to be discovered using find_package
+    configure_package_config_file(
+        "${PROJECT_SOURCE_DIR}/cmake_modules/fdpapiConfig.cmake.in"
         "${PROJECT_BINARY_DIR}/fdpapiConfig.cmake"
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
+    )
+
+    write_basic_package_version_file(
         "${PROJECT_BINARY_DIR}/fdpapiConfigVersion.cmake"
-    DESTINATION 
-        ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
-)
+        VERSION  ${PROJECT_VERSION}
+        COMPATIBILITY SameMinorVersion
+    )
 
-# Configure the .in pkg-config file and install
-CONFIGURE_FILE(
-    ${PROJECT_SOURCE_DIR}/pkg-config/fdpapi.pc.in ${PROJECT_BINARY_DIR}/fdpapi.pc @ONLY
-)
+    # Specify where to install the config files we generated
+    install(
+        FILES 
+            "${PROJECT_BINARY_DIR}/fdpapiConfig.cmake"
+            "${PROJECT_BINARY_DIR}/fdpapiConfigVersion.cmake"
+        DESTINATION 
+            ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapi
+    )
 
-INSTALL(
-    FILES 
-        ${PROJECT_BINARY_DIR}/fdpapi.pc
-    DESTINATION
-        ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
-)
+    # Configure the .in pkg-config file and install
+    CONFIGURE_FILE(
+        ${PROJECT_SOURCE_DIR}/pkg-config/fdpapi.pc.in ${PROJECT_BINARY_DIR}/fdpapi.pc @ONLY
+    )
 
+    INSTALL(
+        FILES 
+            ${PROJECT_BINARY_DIR}/fdpapi.pc
+        DESTINATION
+            ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+    )
+endif()
