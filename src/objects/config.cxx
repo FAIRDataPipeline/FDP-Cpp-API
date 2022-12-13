@@ -240,14 +240,14 @@ void FairDataPipeline::Config::initialise(RESTAPI api_location) {
 
   // Remove the Write Data Store from config file path
   Json::Value config_storage_location_value_;
-  if(config_file_path_.string().find(meta_data_()["write_data_store"].as<std::string>()) !=std::string::npos){
-    config_storage_location_value_["path"] = config_file_path_.string().replace(
-    config_file_path_.string().find(meta_data_()["write_data_store"].as<std::string>()),
-    sizeof(meta_data_()["write_data_store"].as<std::string>()) - 1, "");
+  config_storage_location_value_["path"] = config_file_path_.string();
+  std::size_t ind = config_file_path_.string().find(meta_data_()["write_data_store"].as<std::string>());
+  if(ind != std::string::npos){
+    config_storage_location_value_["path"] = config_storage_location_value_["path"].asString().erase(
+      ind, meta_data_()["write_data_store"].as<std::string>().length()
+    );
   }
-  else {
-    config_storage_location_value_["path"] = config_file_path_.string();
-  }
+
   config_storage_location_value_["path"] = remove_backslash_from_path(config_storage_location_value_["path"].asString());
   config_storage_location_value_["path"] = API::remove_leading_forward_slash(config_storage_location_value_["path"].asString());
   config_storage_location_value_["public"] = true;  
@@ -280,16 +280,15 @@ void FairDataPipeline::Config::initialise(RESTAPI api_location) {
  
   this->config_obj_ = ApiObject::from_json( j_config_obj );
 
-    Json::Value script_storage_location_value_;
+  Json::Value script_storage_location_value_;
+  script_storage_location_value_["path"] = script_file_path_.string();
+  ind = script_file_path_.string().find(meta_data_()["write_data_store"].as<std::string>());
+  if(ind != std::string::npos){
+    script_storage_location_value_["path"] = script_storage_location_value_["path"].asString().erase(
+      ind, meta_data_()["write_data_store"].as<std::string>().length()
+    );
+  }
 
-  if(script_file_path_.string().find(meta_data_()["write_data_store"].as<std::string>()) !=std::string::npos){
-    script_storage_location_value_["path"] = script_file_path_.string().replace(
-    script_file_path_.string().find(meta_data_()["write_data_store"].as<std::string>()),
-    sizeof(meta_data_()["write_data_store"].as<std::string>()) - 1, "");
-  }
-  else {
-    script_storage_location_value_["path"] = script_file_path_.string();
-  }
   script_storage_location_value_["path"] = remove_backslash_from_path(script_storage_location_value_["path"].asString());
   script_storage_location_value_["path"] = API::remove_leading_forward_slash(script_storage_location_value_["path"].asString());
   script_storage_location_value_["hash"] = calculate_hash_from_file(script_file_path_);
