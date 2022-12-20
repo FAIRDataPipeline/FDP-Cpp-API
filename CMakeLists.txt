@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 # Define Project
 project(fdpapi
-    VERSION 0.2.6
+    VERSION 0.2.7
     DESCRIPTION "C++ API for the FAIR Data Pipeline"
     HOMEPAGE_URL "https://github.com/FAIRDataPipeline/cppDataPipeline"
     LANGUAGES CXX C
@@ -34,6 +34,7 @@ else()
     # set the valid options for cmake-gui drop-down list
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release")
 endif()
+
 
 # Set Output Directories to avoid issues on multi release compilers
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
