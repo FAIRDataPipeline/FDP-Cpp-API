@@ -25,9 +25,9 @@ set(FDPAPI_SOURCE_FILES
 
 if(WIN32)
     list(APPEND FDPAPI_SOURCE_FILES
-        ../include/fdp/windows_sys/time.cpp 
-        ../include/fdp/windows_sys/times.h 
-        ../include/fdp/windows_sys/time.h 
+        ../include/windows_sys/times.h 
+        ../include/windows_sys/time.h
+        ../include/windows_sys/time.cpp 
     )
 endif()
 
@@ -38,10 +38,6 @@ add_library(fdpapi::fdpapi ALIAS fdpapi)
 # Set libraries compiled in debug mode to end in 'd'
 set_target_properties(fdpapi PROPERTIES DEBUG_POSTFIX "d")
 
-# Set the public header
-# FIXME This line breaks installation. How is it supposed to work?
-#set_target_properties(fdpapi PROPERTIES PUBLIC_HEADER "${FDPAPI_CODE_COVERAGE}")
-
 target_compile_features(fdpapi PUBLIC cxx_std_11)
 
 target_include_directories(
@@ -51,10 +47,26 @@ target_include_directories(
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
+if(NOT Boost_FOUND)
+
+    target_include_directories(fdpapi PRIVATE ${boostregex_SOURCE_DIR}/include)
+    target_link_directories(fdpapi PRIVATE ${boostregex_BINARY_DIR})
+
+else()
+
+    target_link_libraries(fdpapi PRIVATE Boost::regex )
+
+endif()
+
+if(NOT CURL_FOUND)
+    target_include_directories(fdpapi PRIVATE ${curl_SOURCE_DIR}/include)
+endif()
+
+
 # Dependencies
 target_link_libraries(fdpapi PRIVATE toml11::toml11)
 target_link_libraries(fdpapi PRIVATE digestpp::digestpp)
-target_link_libraries(fdpapi PRIVATE Boost::regex)
+message("BOOST Libraries: ${Boost_LIBRARIES}")
 target_link_libraries(fdpapi PRIVATE ${CURL_LIBRARIES})
 target_link_libraries(fdpapi PRIVATE yaml-cpp)
 if(BUILD_SHARED_LIBS)
@@ -63,13 +75,22 @@ else()
     target_link_libraries(fdpapi PRIVATE jsoncpp_static)
 endif()
 
-# ghc_filesystem is included at the top-level header file -- needs public linking
-target_link_libraries(fdpapi PUBLIC ghcFilesystem::ghc_filesystem)
+# ghc_filesystem is now not included at top level
+target_link_libraries(fdpapi PRIVATE ghcFilesystem::ghc_filesystem)
 
 
 # Set rules for installing targets
 if(FDPAPI_WITH_INSTALL)
+    message("Building With Install")
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib )
+        set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin )
+        set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include )
+        message("installing includes to ${CMAKE_INSTALL_INCLUDEDIR}")
+    endif()
+
     set(fdpapi_targets fdpapi)
+
     install(TARGETS ${fdpapi_targets}
             EXPORT fdpapiTargets
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

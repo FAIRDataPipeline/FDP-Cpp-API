@@ -12,13 +12,13 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
 
+# json-cpp library forces BUILD_SHARED_LIBS to ON by default -- fixing that here.
+option(BUILD_SHARED_LIBS "Build Static Libraries" OFF)
+
 # Default Options for Tests, Code Coverage, installation
 option(FDPAPI_BUILD_TESTS  "Build unit tests" OFF)
 option(FDPAPI_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
 option(FDPAPI_WITH_INSTALL "Allow project to be installable" ON)
-
-# json-cpp library forces BUILD_SHARED_LIBS to ON by default -- fixing that here.
-option(BUILD_SHARED_LIBS "Build .so library instead of .a" OFF)
 
 #  Disable Building in Debug as HD5 
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -43,6 +43,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Set Module Path to include external directory
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/external")
+
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+	cmake_policy(SET CMP0135 NEW)
+endif()
 
 # Include external library files
 include(external/jsoncpp.cmake)

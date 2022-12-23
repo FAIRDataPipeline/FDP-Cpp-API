@@ -72,6 +72,7 @@ if(BUILD_SHARED_LIBS)
 else()
     target_link_libraries(fdpapi-tests PRIVATE jsoncpp_static)
 endif()
+target_link_libraries(fdpapi-tests PRIVATE ghcFilesystem::ghc_filesystem)
 
 # Include GoogleTest Library
 include(GoogleTest)
