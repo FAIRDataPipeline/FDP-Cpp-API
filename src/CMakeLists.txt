@@ -58,15 +58,10 @@ else()
 
 endif()
 
-if(NOT CURL_FOUND)
-    target_include_directories(fdpapi PRIVATE ${curl_SOURCE_DIR}/include)
-endif()
-
 
 # Dependencies
 target_link_libraries(fdpapi PRIVATE toml11::toml11)
 target_link_libraries(fdpapi PRIVATE digestpp::digestpp)
-message("BOOST Libraries: ${Boost_LIBRARIES}")
 target_link_libraries(fdpapi PRIVATE ${CURL_LIBRARIES})
 target_link_libraries(fdpapi PRIVATE yaml-cpp)
 if(BUILD_SHARED_LIBS)
