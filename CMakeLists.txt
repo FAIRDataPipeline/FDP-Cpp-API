@@ -56,7 +56,7 @@ include(external/curl.cmake)
 include(external/yaml_cpp.cmake)
 include(external/toml11.cmake)
 include(external/ghc.cmake)
-include(external/boost_regex.cmake)
+include(external/re2.cmake)
 include(external/digestpp.cmake)
 
 # Define and install library

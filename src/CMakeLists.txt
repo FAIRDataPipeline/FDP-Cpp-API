@@ -47,32 +47,18 @@ target_include_directories(
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-if(NOT Boost_FOUND)
-
-    target_include_directories(fdpapi PRIVATE ${boostregex_SOURCE_DIR}/include)
-    target_link_directories(fdpapi PRIVATE ${boostregex_BINARY_DIR})
-
-else()
-
-    target_link_libraries(fdpapi PRIVATE Boost::regex )
-
-endif()
-
-
 # Dependencies
 target_link_libraries(fdpapi PRIVATE toml11::toml11)
 target_link_libraries(fdpapi PRIVATE digestpp::digestpp)
 target_link_libraries(fdpapi PRIVATE ${CURL_LIBRARIES})
 target_link_libraries(fdpapi PRIVATE yaml-cpp)
+target_link_libraries(fdpapi PRIVATE re2::re2)
+target_link_libraries(fdpapi PRIVATE ghcFilesystem::ghc_filesystem)
 if(BUILD_SHARED_LIBS)
     target_link_libraries(fdpapi PRIVATE jsoncpp_lib)
 else()
     target_link_libraries(fdpapi PRIVATE jsoncpp_static)
 endif()
-
-# ghc_filesystem is now not included at top level
-target_link_libraries(fdpapi PRIVATE ghcFilesystem::ghc_filesystem)
-
 
 # Set rules for installing targets
 if(FDPAPI_WITH_INSTALL)
