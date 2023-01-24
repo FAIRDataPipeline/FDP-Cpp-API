@@ -35,6 +35,7 @@ else()
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release")
 endif()
 
+
 # Set Output Directories to avoid issues on multi release compilers
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
