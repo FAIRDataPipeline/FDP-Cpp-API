@@ -1,6 +1,7 @@
 message(STATUS "[Boost Regex]")
 
 set(BOOST_ENABLE_CMAKE ON CACHE INTERNAL "")
+set(BOOST_REGEX_STANDALONE ON CACHE INTERNAL "Get just regex from Boost libraries")
 
 find_package(Boost COMPONENTS regex)
 if(NOT Boost_FOUND)
@@ -8,12 +9,10 @@ if(NOT Boost_FOUND)
 
     message(STATUS "\tBoost Regex Will be installed.")
     message(STATUS "\tURL: ${BRX_URL}")
-    set(BOOST_REGEX_STANDALONE ON CACHE INTERNAL "Get just regex from Boost libraries")
 
     FetchContent_Declare(
         BOOSTREGEX
         URL ${BRX_URL}
     )
     FetchContent_MakeAvailable(BOOSTREGEX)
-    
 endif()
