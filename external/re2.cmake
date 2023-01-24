@@ -1,6 +1,6 @@
 message(STATUS "[RE2]")
 
-set(RE2_ENABLE_TESTING OFF CACHE INTERNAL "")
+set(RE2_BUILD_TESTING OFF CACHE INTERNAL "")
 
 set(RE2_URL "https://github.com/google/re2.git")
 set(RE2_COMMIT "2022-12-01")
