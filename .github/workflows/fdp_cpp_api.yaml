@@ -128,6 +128,7 @@ jobs:
       - name: Compile FDP-Cpp-API
         run: cmake --build build --config=Release
       - name: Build from Install
+        run: |
           cmake --build build --target install
           cmake -B build_from_install -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install -DFDPAPI_FETCH_NEVER=ON
           cmake --build build_from_install
