@@ -62,7 +62,7 @@ endif()
 
 # Set rules for installing targets
 if(FDPAPI_WITH_INSTALL)
-    message("Building With Install")
+    message(STATUS "Building install components")
     if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib )
         set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin )

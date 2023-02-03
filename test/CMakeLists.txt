@@ -63,7 +63,7 @@ target_link_libraries(fdpapi-tests PRIVATE fdpapi::fdpapi)
 target_link_libraries(fdpapi-tests PRIVATE gtest gtest_main)
 
 target_link_libraries(fdpapi-tests PRIVATE toml11::toml11)
-target_link_libraries(fdpapi-tests PRIVATE digestpp)  
+target_link_libraries(fdpapi-tests PRIVATE digestpp::digestpp)
 target_link_libraries(fdpapi-tests PRIVATE re2::re2)
 target_link_libraries(fdpapi-tests PRIVATE ${CURL_LIBRARIES})
 target_link_libraries(fdpapi-tests PRIVATE yaml-cpp)
