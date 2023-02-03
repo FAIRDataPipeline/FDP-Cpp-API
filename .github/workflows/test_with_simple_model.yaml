@@ -35,7 +35,7 @@ jobs:
           virtualenvs-in-project: true
       - name: Install Dependencies
         run: |
-          sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev
+          sudo apt install -y lcov curl libcurl4-openssl-dev libyaml-cpp-dev
       - name: Build and run seirs example
         run: |
           cd ../simpleModel

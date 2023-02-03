@@ -42,7 +42,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
+          sudo apt install -y lcov curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
       - name: Configure Library
         run: |
           cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON -DFDPAPI_CODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install
