@@ -19,14 +19,14 @@ if(FDPAPI_FETCH_CURL_ONLY AND FDPAPI_FETCH_CURL_NEVER)
     )
 endif()
 
-if(NOT FDPAPI_FETCH_CURL_ONLY)
+if(NOT (FDPAPI_FETCH_CURL_ONLY OR FDPAPI_FETCH_ONLY))
     find_package(CURL QUIET)
 endif()
 
 
-if(CURL_FOUND AND NOT FDPAPI_FETCH_CURL_ONLY)
+if(CURL_FOUND AND NOT (FDPAPI_FETCH_CURL_ONLY OR FDPAPI_FETCH_ONLY))
     message(STATUS "\tCURL found.")
-elseif(NOT FDPAPI_FETCH_CURL_NEVER)
+elseif(NOT (FDPAPI_FETCH_CURL_NEVER OR FDPAPI_FETCH_NEVER))
     set(CURL_URL "https://github.com/curl/curl/archive/refs/tags/curl-7_80_0.zip")
 
     message(STATUS "\tCURL not found.")

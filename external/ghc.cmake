@@ -21,13 +21,13 @@ if(FDPAPI_FETCH_GHC_ONLY AND FDPAPI_FETCH_GHC_NEVER)
     )
 endif()
 
-if(NOT FDPAPI_FETCH_GHC_ONLY)
+if(NOT (FDPAPI_FETCH_GHC_ONLY OR FDPAPI_FETCH_ONLY))
     find_package(ghc_filesystem QUIET)
 endif()
 
-if(ghc_filesystem_FOUND AND NOT FDPAPI_FETCH_GHC_ONLY)
+if(ghc_filesystem_FOUND AND NOT (FDPAPI_FETCH_GHC_ONLY OR FDPAPI_FETCH_ONLY))
     message(STATUS "\tGHC found.")
-elseif(NOT FDPAPI_FETCH_GHC_NEVER)
+elseif(NOT (FDPAPI_FETCH_GHC_NEVER OR FDPAPI_FETCH_NEVER))
     set(GHC_URL "https://github.com/gulrak/filesystem/archive/refs/tags/v1.5.10.zip")
 
     message(STATUS "\tGHC not found.")

@@ -19,6 +19,11 @@ option(BUILD_SHARED_LIBS "Build Static Libraries" OFF)
 option(FDPAPI_BUILD_TESTS  "Build unit tests" OFF)
 option(FDPAPI_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
 option(FDPAPI_WITH_INSTALL "Allow project to be installable" ON)
+option(FDPAPI_FETCH_ONLY "Don't use pre-installed dependencies" OFF)
+option(FDPAPI_FETCH_NEVER "Only use pre-installed dependencies" OFF)
+if(FDPAPI_FETCH_ONLY AND FDPAPI_FETCH_NEVER)
+    message(FATAL_ERROR "FDPAPI_FETCH_ONLY and FDPAPI_FETCH_NEVER are mutually exclusive")
+endif()
 
 #  Disable Building in Debug as HD5 
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)

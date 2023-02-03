@@ -21,13 +21,13 @@ if(FDPAPI_FETCH_JSONCPP_ONLY AND FDPAPI_FETCH_JSONCPP_NEVER)
     )
 endif()
 
-if(NOT FDPAPI_FETCH_JSONCPP_ONLY)
+if(NOT (FDPAPI_FETCH_JSONCPP_ONLY OR FDPAPI_FETCH_ONLY))
     find_package(jsoncpp QUIET)
 endif()
 
-if(jsoncpp_FOUND AND NOT FDPAPI_FETCH_JSONCPP_ONLY)
+if(jsoncpp_FOUND AND NOT (FDPAPI_FETCH_JSONCPP_ONLY OR FDPAPI_FETCH_ONLY))
     message(STATUS "\tJsonCpp found.")
-elseif(NOT FDPAPI_FETCH_JSONCPP_NEVER)
+elseif(NOT (FDPAPI_FETCH_JSONCPP_NEVER OR FDPAPI_FETCH_NEVER))
     set(JSONCPP_URL "https://github.com/open-source-parsers/jsoncpp/archive/refs/tags/1.9.5.zip")
 
     message(STATUS "\tJsonCpp not found.")
