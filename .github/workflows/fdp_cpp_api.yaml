@@ -131,7 +131,7 @@ jobs:
         run: |
           cmake --build build --config=Release --target install
           cmake -B build_from_install -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install -DFDPAPI_FETCH_NEVER=ON
-          cmake --build --config=Release build_from_install
+          cmake --build build_from_install --config=Release 
   Build_GCC_4_8:
     name: Build GCC 4.8
     runs-on: ubuntu-18.04
