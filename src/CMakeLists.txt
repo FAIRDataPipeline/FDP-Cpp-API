@@ -50,7 +50,7 @@ target_include_directories(
 # Dependencies
 target_link_libraries(fdpapi PRIVATE toml11::toml11)
 target_link_libraries(fdpapi PRIVATE digestpp::digestpp)
-target_link_libraries(fdpapi PRIVATE ${CURL_LIBRARIES})
+target_link_libraries(fdpapi PRIVATE CURL::libcurl)
 target_link_libraries(fdpapi PRIVATE yaml-cpp)
 target_link_libraries(fdpapi PRIVATE re2::re2)
 target_link_libraries(fdpapi PRIVATE ghcFilesystem::ghc_filesystem)

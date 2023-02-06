@@ -37,12 +37,6 @@ elseif(NOT (FDPAPI_FETCH_CURL_NEVER OR FDPAPI_FETCH_NEVER))
         URL ${CURL_URL}
     )
     FetchContent_MakeAvailable(CURL)
-
-    set(CURL_INCLUDE_DIRS = ${curl_SOURCE_DIR}/include)
-    set(CURL_LIBRARIES libcurl)
 else()
     message(FATAL_ERROR "\tCURL not found.")
 endif()
-
-message(STATUS "\tInclude Directory: ${CURL_INCLUDE_DIRS}")
-message(STATUS "\tLibraries: ${CURL_LIBRARIES}")
