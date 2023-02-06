@@ -73,7 +73,7 @@ macro(fdpapi_add_external pkg)
         if(DEFINED FDPAPI_${pkg}_URL)
             message(STATUS "\tInstalling from ${FDPAPI_${pkg}_URL}.")
             FetchContent_Declare(
-                FDPAPI_${pkg}_PKG_NAME
+                ${pkg}
                 URL "${FDPAPI_${pkg}_URL}"
             )
         elseif(DEFINED FDPAPI_${pkg}_REPO)
@@ -81,20 +81,20 @@ macro(fdpapi_add_external pkg)
             if(DEFINED FDPAPI_${pkg}_TAG)
                 message(STATUS "\tGit tag: ${FDPAPI_${pkg}_TAG}.")
                 FetchContent_Declare(
-                    FDPAPI_${pkg}_PKG_NAME
+                    ${pkg}
                     GIT_REPOSITORY "${FDPAPI_${pkg}_REPO}"
                     GIT_TAG "${FDPAPI_${pkg}_TAG}"
                 )
             else()
                 FetchContent_Declare(
-                    FDPAPI_${pkg}_PKG_NAME
+                    ${pkg}
                     GIT_REPOSITORY "${FDPAPI_${pkg}_REPO}"
                 )
             endif()
         else()
             message(FATAL_ERROR "\t${pkg} could not be installed.")
         endif()
-        FetchContent_MakeAvailable(FDPAPI_${pkg}_PKG_NAME)
+        FetchContent_MakeAvailable(${pkg})
     else()
         message(FATAL_ERROR "\t${pkg} not found.")
     endif()
