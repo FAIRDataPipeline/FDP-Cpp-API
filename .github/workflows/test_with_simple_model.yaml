@@ -61,7 +61,7 @@ jobs:
           fair run --local data/seirs_config.yaml
         if: startsWith(github.ref, 'refs/tags/')
   Build_simple_model_from_install:
-    name: Build Ubuntu Simple Model
+    name: Build Ubuntu simple model from install
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
