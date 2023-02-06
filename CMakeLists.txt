@@ -19,10 +19,10 @@ option(BUILD_SHARED_LIBS "Build Static Libraries" OFF)
 option(FDPAPI_BUILD_TESTS  "Build unit tests" OFF)
 option(FDPAPI_CODE_COVERAGE "Run GCov and LCov code coverage tools" OFF)
 option(FDPAPI_WITH_INSTALL "Allow project to be installable" ON)
-option(FDPAPI_FETCH_ONLY "Don't use pre-installed dependencies" OFF)
-option(FDPAPI_FETCH_NEVER "Only use pre-installed dependencies" OFF)
-if(FDPAPI_FETCH_ONLY AND FDPAPI_FETCH_NEVER)
-    message(FATAL_ERROR "FDPAPI_FETCH_ONLY and FDPAPI_FETCH_NEVER are mutually exclusive")
+option(FDPAPI_ALWAYS_FETCH "Don't use pre-installed dependencies, use FetchContent instead" OFF)
+option(FDPAPI_NEVER_FETCH "Only use pre-installed dependencies, don't use FetchContent" OFF)
+if(FDPAPI_ALWAYS_FETCH AND FDPAPI_NEVER_FETCH)
+    message(FATAL_ERROR "FDPAPI_ALWAYS_FETCH and FDPAPI_NEVER_FETCH are mutually exclusive")
 endif()
 
 #  Disable Building in Debug as HD5 
@@ -54,6 +54,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/external
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 	cmake_policy(SET CMP0135 NEW)
 endif()
+
+# Include macro for adding external packages
+include(cmake_modules/fdpapi_add_external.cmake)
 
 # Include external library files
 include(external/jsoncpp.cmake)
