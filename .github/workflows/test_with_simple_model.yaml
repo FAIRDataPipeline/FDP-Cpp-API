@@ -70,7 +70,7 @@ jobs:
       - name: Build
         run: |
           cmake -B build -DCMAKE_INSTALL_PREFIX=install
-          cmake -B build --target install
+          cmake --build build --target install
       - name: Install graphviz
         run:  |
               sudo apt update
