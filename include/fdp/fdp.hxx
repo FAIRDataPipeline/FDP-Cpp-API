@@ -3,8 +3,6 @@
 
 #include "utilities/logging.hxx"
 
-#include <ghc/filesystem.hpp>
-
 namespace FairDataPipeline {
 /**
  * @brief DataPipeline Class:

@@ -18,9 +18,9 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-#include <boost/regex.hpp>
+#include <re2/re2.h>
 
-#include "digestpp.hpp"
+#include "digestpp/digestpp.hpp"
 
 #ifdef _WIN32
    #include <io.h> 

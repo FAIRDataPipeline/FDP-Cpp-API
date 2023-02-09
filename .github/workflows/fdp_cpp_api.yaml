@@ -42,10 +42,10 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
+          sudo apt install -y lcov curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
       - name: Configure Library
         run: |
-          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON -DFDPAPI_CODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON -DFDPAPI_CODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install
       - name: Fetch cache
         uses: actions/cache@v2.1.5
         with:
@@ -79,6 +79,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Build from Install
+        run: |
+         cmake --build build --target install
+         cmake -B build_from_install -DFDPAPI_BUILD_TESTS=ON -DFDPAPI_CODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DFDPAPI_NEVER_FETCH=ON
+         cmake --build build_from_install
+         build-wrapper-linux-x86-64 --out-dir bw-outputs cmake --build build --target coverage
+         if [ $? -eq 0 ]; then
+           echo "Unit tests completed successfully"
+           exit 0
+         else
+           echo "Unit tests failed"
+           exit 1
+         fi
   Build_MacOS:
     name: Build MacOS
     runs-on: macOS-latest
@@ -92,10 +105,15 @@ jobs:
           brew install curl
       - name: Configure Library
         run: |
-          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
+          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install
       - name: Build Library
         run: |
           cmake --build build
+      - name: Build from Install
+        run: |
+          cmake --build build --target install
+          cmake -B build_from_install -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install -DFDPAPI_NEVER_FETCH=ON
+          cmake --build build_from_install
   Build_Windows:
     name: Build Windows
     runs-on: windows-latest
@@ -106,9 +124,14 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Configure Library
         run: |
-          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
+          cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install
       - name: Compile FDP-Cpp-API
         run: cmake --build build --config=Release
+      - name: Build from Install
+        run: |
+          cmake --build build --config=Release --target install
+          cmake -B build_from_install -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install -DFDPAPI_NEVER_FETCH=ON
+          cmake --build build_from_install --config=Release 
   Build_GCC_4_8:
     name: Build GCC 4.8
     runs-on: ubuntu-18.04
@@ -126,7 +149,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev gcovr
+          sudo apt install -y lcov curl libcurl4-openssl-dev gcovr
       - name: Configure Library
         run: |
           cmake -Bbuild

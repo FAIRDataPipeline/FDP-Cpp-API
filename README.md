@@ -17,7 +17,7 @@ You can build and test the library using CMake, this implementation requires `C+
 It is recomended that you install CURL prior to installation of this API
 - [CURL](https://curl.se/libcurl/)
 
-compile the library and tests by running:
+Compile the library and tests by running:
 
 ```
 $ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
@@ -29,6 +29,28 @@ $ cmake --build build
 $ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON
 $ cmake --build build --config=Release
 ```
+
+The library can be installed system-wide using:
+
+```
+$ cmake --build build --target install
+```
+
+Note that this will require Boost to be installed to your system, or you may need to
+build a shared library:
+
+```
+$ cmake -B build -DFDPAPI_BUILD_TESTS=ON -DBUILD_SHARED_LIBS=ON
+```
+
+After doing so, the library can be discovered and utilised in other CMake projects
+using:
+
+```
+find_package(fdpapi)
+target_link_libraries(my_project PRIVATE fdpapi::fdpapi)
+```
+
 
 ## Outline
 The main class the user will interact with is `DataPipeline` which has only the required methods such as `link_read` etc. This class has a member which is a pointer to an underlying `DataPipelineImpl_` class which performs the various procedures required to handle the data. A logger has been used to give as much feedback to the user as possible, the verbosity being handled by a log level argument.

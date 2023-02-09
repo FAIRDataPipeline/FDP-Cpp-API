@@ -18,7 +18,7 @@
 #include <iterator>
 #include <json/reader.h>
 #include <map>
-#include <boost/regex.hpp>
+#include <re2/re2.h>
 #include <string>
 #include <vector>
 

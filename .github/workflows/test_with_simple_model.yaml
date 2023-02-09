@@ -11,13 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with: 
+        with:
           python-version: "3.9"
           architecture: "x64"
       - name: Install graphviz
         run:  |
               sudo apt update
-              sudo apt-get install graphviz              
+              sudo apt-get install graphviz
               sudo apt-get install -y gnuplot
       - name: Install local registry
         run: curl -fsSL https://data.scrc.uk/static/localregistry.sh | /bin/bash -s -- -b main
@@ -35,7 +35,7 @@ jobs:
           virtualenvs-in-project: true
       - name: Install Dependencies
         run: |
-          sudo apt install -y lcov libjsoncpp-dev curl libcurl4-openssl-dev libyaml-cpp-dev
+          sudo apt install -y lcov curl libcurl4-openssl-dev libyaml-cpp-dev
       - name: Build and run seirs example
         run: |
           cd ../simpleModel
@@ -46,7 +46,7 @@ jobs:
           cmake --build build
           fair init --ci --local
           fair pull --local data/seirs_config.yaml
-          fair run --local data/seirs_config.yaml          
+          fair run --local data/seirs_config.yaml
         if: startsWith(github.ref, 'refs/tags/') != true
       - name: Build and run seirs example on tagged release
         run: |
@@ -58,5 +58,32 @@ jobs:
           cmake --build build
           fair init --ci --local
           fair pull --local data/seirs_config.yaml
-          fair run --local data/seirs_config.yaml          
+          fair run --local data/seirs_config.yaml
         if: startsWith(github.ref, 'refs/tags/')
+  Build_simple_model_from_install:
+    name: Build Ubuntu simple model from install
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          cmake -B build -DCMAKE_INSTALL_PREFIX=install
+          cmake --build build --target install
+      - name: Install graphviz
+        run:  |
+              sudo apt update
+              sudo apt-get install graphviz
+              sudo apt-get install -y gnuplot
+      - name: Checkout SimpleModel
+        uses: actions/checkout@v3
+        with:
+          repository: FAIRDataPipeline/cppSimpleModel
+          ref: prevent_fetchcontent_option
+          path: simpleModel
+      - name: Build Simple Model
+        run: |
+          cd simpleModel
+          cmake -B build -DCMAKE_INSTALL_PREFIX=../install -DFDPAPI_NO_FETCHCONTENT=ON
+          cmake --build build

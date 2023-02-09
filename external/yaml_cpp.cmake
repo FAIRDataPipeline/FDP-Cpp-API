@@ -1,12 +1,12 @@
-SET( YAMLCPP_URL "https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-0.7.0.zip" )
+set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "Build yaml-cpp tests")
+if(BUILD_SHARED_LIBS)
+    set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "Build .so for yaml-cpp")
+endif()
+set(YAML_CPP_INSTALL ON CACHE INTERNAL "Include export targets for installation")
 
-MESSAGE( STATUS "[YAML-cpp]" )
-MESSAGE( STATUS "\tYAML-cpp Will be installed." )
-MESSAGE( STATUS "\tURL: ${YAMLCPP_URL}" )
-
-include(FetchContent)
-FetchContent_Declare(
-    YAMLCPP
-    URL ${YAMLCPP_URL}
+fdpapi_add_external(
+    "YAMLCPP"
+    REPO "https://github.com/jbeder/yaml-cpp.git"
+    TAG "1b50109f7bea60bd382d8ea7befce3d2bd67da5f"
+    PKG_NAME "yaml-cpp"
 )
-FetchContent_MakeAvailable(YAMLCPP)

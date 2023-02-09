@@ -95,7 +95,8 @@ CURL *API::setup_download_session_(const ghc::filesystem::path &addr_path,
 
 Json::Value API::get_request(const ghc::filesystem::path &addr_path,
                          long expected_response, std::string token) {
-  std::string addr_path_ = boost::regex_replace(addr_path.string(), boost::regex(std::string("\\\\")), "/");
+  std::string addr_path_ = addr_path.string();
+  RE2::GlobalReplace(&addr_path_, "\\\\", "/");
   return get_request(addr_path_, expected_response);
 }
 
@@ -167,6 +168,8 @@ std::string API::json_to_query_string(Json::Value &json_value) {
   std::string rtn = "?";
   // Need to remove the api address from any values using regex
   std::string regex_string = "(" + url_root_ + ")([A-Za-z_]+)\\/([0-9]+)\\/";
+  std::string match1, match2;
+  int match3;
   // Check the json value is not empty
   if (json_value.size() > 0) {
     // Iterate through the json keys
@@ -179,18 +182,20 @@ std::string API::json_to_query_string(Json::Value &json_value) {
              i++) {
           // add the key and value to the return string after removing the api
           // address with regex
-          rtn += key + "=" +
-                 boost::regex_replace(json_value.get(key, "")[i].asString(),
-                                    boost::regex(regex_string), "$3") +
-                 "&";
+          std::string str = json_value.get(key, "")[i].asString();
+          if(RE2::FullMatch(str, regex_string, &match1, &match2, &match3)){
+            str = std::to_string(match3);
+          }
+          rtn += key + "=" + str + "&";
         }
       } else {
         // if it's not an array add the key and value to the return string after
         // removing the api address with regex
-        rtn += key + "=" +
-               boost::regex_replace(json_value.get(key, "").asString(),
-                                  boost::regex(regex_string), "$3") +
-               "&";
+        std::string str = json_value.get(key, "").asString();
+        if(RE2::FullMatch(str, regex_string, &match1, &match2, &match3)){
+          str = std::to_string(match3);
+        }
+        rtn += key + "=" + str + "&";
       }
     }
   }
@@ -200,7 +205,9 @@ std::string API::json_to_query_string(Json::Value &json_value) {
 
 std::string API::escape_space(std::string &str) {
   // Using regex replace space with html character (%20)
-  return std::string(boost::regex_replace(str, boost::regex(" "), "%20"));
+  std::string result = str;
+  RE2::GlobalReplace(&result, " ", "%20");
+  return result;
 }
 
 Json::Value API::post(std::string addr_path, Json::Value &post_data,
@@ -222,7 +229,9 @@ Json::Value API::post_file_type(Json::Value &post_data, const std::string &token
     logger::get_logger()->error() << "Error: Post Data does not contain a file extension";
     throw rest_apiquery_error("Failed to post file_type");
   }
-  post_data["extension"] = boost::regex_replace(post_data["extension"].asString(), boost::regex("."), "");
+  std::string extension = post_data["extension"].asString();
+  RE2::GlobalReplace(&extension, ".", "");
+  post_data["extension"] = extension;
   Json::Value _file_type_query;
   _file_type_query["extension"] = post_data["extension"];
   Json::Value _file_type_exists = get_by_json_query("file_type", _file_type_query);
