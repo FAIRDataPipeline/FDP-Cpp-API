@@ -80,11 +80,18 @@ Installation</h1>
 <p >It is recomended that you install CURL prior to installation of this API</p><ul>
 <li><a href="https://curl.se/libcurl/">CURL</a></li>
 </ul>
-<p >compile the library and tests by running:</p>
+<p >Compile the library and tests by running:</p>
 <div class="fragment"><div class="line">$ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON</div>
 <div class="line">$ cmake --build build</div>
 </div><!-- fragment --><p ><b>Important</b> For multi-config compilers such as Visual Studio xcode or ninja the config type needs to be set to <code>Release</code> otherwise the API will not build for example: </p><div class="fragment"><div class="line">$ cmake -Bbuild -DFDPAPI_BUILD_TESTS=ON</div>
 <div class="line">$ cmake --build build --config=Release</div>
+</div><!-- fragment --><p >The library can be installed system-wide using:</p>
+<div class="fragment"><div class="line">$ cmake --build build --target install</div>
+</div><!-- fragment --><p >Note that this will require Boost to be installed to your system, or you may need to build a shared library:</p>
+<div class="fragment"><div class="line">$ cmake -B build -DFDPAPI_BUILD_TESTS=ON -DBUILD_SHARED_LIBS=ON</div>
+</div><!-- fragment --><p >After doing so, the library can be discovered and utilised in other CMake projects using:</p>
+<div class="fragment"><div class="line">find_package(fdpapi)</div>
+<div class="line">target_link_libraries(my_project PRIVATE fdpapi::fdpapi)</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
 Outline</h1>
 <p >The main class the user will interact with is <code>DataPipeline</code> which has only the required methods such as <code>link_read</code> etc. This class has a member which is a pointer to an underlying <code><a class="el" href="class_data_pipeline_impl__.html" title="private pointer-to-implementation class containing all backend methods">DataPipelineImpl_</a></code> class which performs the various procedures required to handle the data. A logger has been used to give as much feedback to the user as possible, the verbosity being handled by a log level argument.</p>
