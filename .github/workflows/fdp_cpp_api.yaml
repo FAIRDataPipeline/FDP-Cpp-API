@@ -157,7 +157,7 @@ jobs:
           wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
           apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
           apt-get update
-          sudo apt install cmake -y
+          apt install cmake -y
           cmake --version
       - uses: actions/checkout@v3
       - name: Install Dependencies
