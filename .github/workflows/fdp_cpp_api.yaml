@@ -146,11 +146,15 @@ jobs:
         run: |
           apt update
           apt install build-essential -y
-          apt install g++-4.8 -y
+          apt install g++-4.8 gcc-4.8 -y
+          apt install cmake
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 30
+          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
           gcc --version
+          g++ --version
       - name: Install Dependencies
         run: |
-          apt install -y lcov curl libcurl4-openssl-dev gcovr -y
+          apt install -y lcov curl libcurl4-openssl-dev gcovr
       - name: Configure Library
         run: |
           cmake -Bbuild
