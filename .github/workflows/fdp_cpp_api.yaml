@@ -164,10 +164,8 @@ jobs:
           cd $GITHUB_WORKSPACE
           mkdir build
           ls
-          cmake -S . -B build
+          cmake -S $GITHUB_WORKSPACE -B build
       - name: Build Library
         run: 
           cd $GITHUB_WORKSPACE
-          ls
-          pwd
-          cmake --build build
+          cmake --build $GITHUB_WORKSPACE/build
