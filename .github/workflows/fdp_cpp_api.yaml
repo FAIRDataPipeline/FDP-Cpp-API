@@ -148,13 +148,17 @@ jobs:
           apt update
           apt install build-essential -y
           apt install g++-4.8 gcc-4.8 -y
-          apt install cmake -y
           rm /usr/bin/gcc
           rm /usr/bin/g++
           ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+          apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+          apt-get update
+          sudo apt install cmake
+          cmake --version
       - uses: actions/checkout@v3
       - name: Install Dependencies
         run: |
