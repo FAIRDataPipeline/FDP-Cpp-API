@@ -154,7 +154,7 @@ jobs:
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
           apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
           apt-get update
           apt install cmake -y
