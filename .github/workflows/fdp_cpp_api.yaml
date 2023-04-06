@@ -146,7 +146,7 @@ jobs:
       - name: Setup GCC 4.8
         run: |
           apt update
-          apt install build-essential libssl-dev -y
+          apt install build-essential libssl-dev git -y
           git clone https://github.com/Kitware/CMake/
           cd CMake
           ./bootstrap && make && sudo make install
