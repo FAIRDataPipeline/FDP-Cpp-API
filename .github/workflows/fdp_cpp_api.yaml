@@ -148,8 +148,10 @@ jobs:
           apt install build-essential -y
           apt install g++-4.8 gcc-4.8 -y
           apt install cmake
-          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 30
-          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
+          rm /usr/bin/gcc
+          rm /usr/bin/g++
+          ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
+          ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
       - name: Install Dependencies
