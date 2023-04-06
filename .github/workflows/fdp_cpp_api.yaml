@@ -149,7 +149,7 @@ jobs:
           apt install build-essential libssl-dev git -y
           git clone https://github.com/Kitware/CMake/
           cd CMake
-          ./bootstrap && make && sudo make install
+          ./bootstrap && make && make install
           cmake --version
           apt install g++-4.8 gcc-4.8 -y
           rm /usr/bin/gcc
