@@ -145,13 +145,12 @@ jobs:
       - name: Setup GCC 4.8
         run: |
           apt update
-          apt install build-essential
-          apt install g++-4.8
+          apt install build-essential -y
+          apt install g++-4.8 -y
           gcc --version
       - name: Install Dependencies
         run: |
-          apt update
-          apt install -y lcov curl libcurl4-openssl-dev gcovr
+          apt install -y lcov curl libcurl4-openssl-dev gcovr -y
       - name: Configure Library
         run: |
           cmake -Bbuild
