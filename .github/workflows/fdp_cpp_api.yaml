@@ -1,6 +1,6 @@
 name: FDP C++ API
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   Build_Ubuntu:
