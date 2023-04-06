@@ -163,8 +163,8 @@ jobs:
         run: |
           ls
           cmake -S . -B build
-        working-directory: $GITHUB_WORKSPACE
+        working-directory: github.workspace
       - name: Build Library
         run: 
           cmake --build build
-        working-directory: $GITHUB_WORKSPACE
+        working-directory: github.workspace
