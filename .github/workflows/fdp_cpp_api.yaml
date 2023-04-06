@@ -7,7 +7,7 @@ jobs:
     name: Build Ubuntu
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -146,7 +146,7 @@ jobs:
       - name: Setup GCC 4.8
         run: |
           apt update
-          apt install build-essential -y
+          apt install build-essential libssl-dev -y
           apt install g++-4.8 gcc-4.8 -y
           rm /usr/bin/gcc
           rm /usr/bin/g++
@@ -154,11 +154,14 @@ jobs:
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
-          apt-get install ca-certificates gpg -y
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
-          apt-get update
-          apt install cmake -y
+          wget https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0.tar.gz
+          tar -zvxf cmake-3.20.0.tar.gz
+          cd cmake-3.20.0
+          ./bootstrap
+          make -j8
+          apt-get install checkinstall -y
+          hash -r
+          checkinstall --pkgname=cmake --pkgversion="3.20-custom" --default
           cmake --version
       - uses: actions/checkout@v3
       - name: Install Dependencies
