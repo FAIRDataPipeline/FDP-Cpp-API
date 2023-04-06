@@ -155,9 +155,6 @@ jobs:
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
-          apt install git -y
-          git --version
-          chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v3
       - name: Install Dependencies
         run: |
@@ -165,9 +162,8 @@ jobs:
       - name: Configure Library
         run: |
           cd $GITHUB_WORKSPACE
-          pwd
           ls
-          cmake -Bbuild
+          cmake -S . -B build
       - name: Build Library
         run: 
           cd $GITHUB_WORKSPACE
