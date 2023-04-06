@@ -136,8 +136,8 @@ jobs:
     name: Build GCC 4.8
     runs-on: ubuntu-latest
     container: 
-      ubuntu:18.04
-      --user root
+      image: ubuntu:18.04
+      options: --user root
     steps:      
       - uses: actions/setup-python@v2
         with: 
