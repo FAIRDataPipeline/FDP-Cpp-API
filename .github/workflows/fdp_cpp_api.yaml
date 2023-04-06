@@ -156,7 +156,7 @@ jobs:
           gcc --version
           g++ --version
           apt install git -y
-          git -v
+          git --version
       - uses: actions/checkout@v3.0.2
       - name: Install Dependencies
         run: |
