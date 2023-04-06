@@ -135,9 +135,10 @@ jobs:
   Build_GCC_4_8:
     name: Build GCC 4.8
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
-    steps:
-      - uses: actions/checkout@v2
+    container: 
+      ubuntu:18.04
+      --user root
+    steps:      
       - uses: actions/setup-python@v2
         with: 
           python-version: "3.9"
@@ -154,6 +155,9 @@ jobs:
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
+          apt intall git -y
+          git -v
+      - uses: actions/checkout@v3.0.2
       - name: Install Dependencies
         run: |
           apt install -y lcov curl libcurl4-openssl-dev gcovr
