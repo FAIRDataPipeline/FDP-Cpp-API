@@ -7,7 +7,7 @@ jobs:
     name: Build Ubuntu
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -154,9 +154,9 @@ jobs:
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
-          apt-get install ca-certificates -y
-          wget --no-check-certificate -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
-          apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+          apt-get install ca-certificates gpg -y
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
           apt-get update
           apt install cmake -y
           cmake --version
