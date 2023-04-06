@@ -145,8 +145,9 @@ jobs:
       - name: Setup GCC 4.8
         run: |
           apt update
-          apt install build-essentials
+          apt install build-essential
           apt install g++-4.8
+          gcc --version
       - name: Install Dependencies
         run: |
           apt update
