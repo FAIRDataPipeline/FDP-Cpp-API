@@ -144,14 +144,13 @@ jobs:
           architecture: "x64"
       - name: Setup GCC 4.8
         run: |
-          sudo apt update
-          sudo apt upgrade
-          sudo apt install build-essentials
-          sudo apt install g++-4.8
+          apt update
+          apt install build-essentials
+          apt install g++-4.8
       - name: Install Dependencies
         run: |
-          sudo apt update
-          sudo apt install -y lcov curl libcurl4-openssl-dev gcovr
+          apt update
+          apt install -y lcov curl libcurl4-openssl-dev gcovr
       - name: Configure Library
         run: |
           cmake -Bbuild
