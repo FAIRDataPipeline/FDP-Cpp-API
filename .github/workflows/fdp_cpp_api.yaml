@@ -157,15 +157,17 @@ jobs:
           g++ --version
           apt install git -y
           git --version
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Install Dependencies
         run: |
           apt install -y lcov curl libcurl4-openssl-dev gcovr
       - name: Configure Library
         run: |
-          cd "$GITHUB_WORKSPACE"
+          cd $GITHUB_WORKSPACE
+          pwd
           cmake -Bbuild
       - name: Build Library
         run: 
-          cd "$GITHUB_WORKSPACE"
+          cd $GITHUB_WORKSPACE
+          pwd
           cmake --build build
