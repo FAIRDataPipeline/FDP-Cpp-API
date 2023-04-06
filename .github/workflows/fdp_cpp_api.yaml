@@ -161,11 +161,10 @@ jobs:
           apt install -y lcov curl libcurl4-openssl-dev gcovr
       - name: Configure Library
         run: |
-          cd $GITHUB_WORKSPACE
-          mkdir build
           ls
-          cmake -S $GITHUB_WORKSPACE -B build
+          cmake -S . -B build
+        working-directory: $GITHUB_WORKSPACE
       - name: Build Library
         run: 
-          cd $GITHUB_WORKSPACE
-          cmake --build $GITHUB_WORKSPACE/build
+          cmake --build build
+        working-directory: $GITHUB_WORKSPACE
