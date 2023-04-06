@@ -155,7 +155,7 @@ jobs:
           ln -s /usr/bin/g++-4.8 /usr/bin/g++
           gcc --version
           g++ --version
-          apt intall git -y
+          apt install git -y
           git -v
       - uses: actions/checkout@v3.0.2
       - name: Install Dependencies
