@@ -162,6 +162,7 @@ jobs:
       - name: Configure Library
         run: |
           cd $GITHUB_WORKSPACE
+          mkdir build
           ls
           cmake -S . -B build
       - name: Build Library
