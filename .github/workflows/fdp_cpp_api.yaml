@@ -150,11 +150,13 @@ jobs:
           sudo apt install make wget git gcc g++ lhasa libgmp-dev libmpfr-dev libmpc-dev flex bison gettext texinfo ncurses-dev autoconf rsync
           wget https://ftp.gnu.org/gnu/gcc/gcc-4.8.5/gcc-4.8.5.tar.bz2 --no-check-certificate
           tar xf gcc-4.8.5.tar.bz2
-          # cd gcc-4.8.5
-          # ./contrib/download_prerequisites
-          # cd ..
+          cd gcc-4.8.5
+          ./contrib/download_prerequisites
+          cd ..
           sed -i -e 's/__attribute__/\/\/__attribute__/g' gcc-4.8.5/gcc/cp/cfns.h
           sed -i 's/struct ucontext/ucontext_t/g' gcc-4.8.5/libgcc/config/i386/linux-unwind.h
+          sed -i '/#include <pthread.h>/a #include <signal.h>' gcc-4.8.5/libsanitizer/asan/asan_linux.cc
+          sed -i 's/__res_state \\*statp = (__res_state\\*)state\\;/struct __res_state \\*statp = (struct __res_state\\*)state\\;/g' gcc-4.8.5/libsanitizer/tsan/tsan_platform_linux.cc
           mkdir xgcc-4.8.5
           pushd xgcc-4.8.5
           $PWD/../gcc-4.8.5/configure --enable-languages=c,c++ --prefix=/usr --enable-shared --enable-plugin --program-suffix=-4.8.5
