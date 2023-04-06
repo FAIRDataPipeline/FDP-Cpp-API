@@ -155,7 +155,7 @@ jobs:
           gcc --version
           g++ --version
           apt-get install ca-certificates -y
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
+          wget --no-check-certificate -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
           apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
           apt-get update
           apt install cmake -y
