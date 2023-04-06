@@ -147,7 +147,7 @@ jobs:
           apt update
           apt install build-essential -y
           apt install g++-4.8 gcc-4.8 -y
-          apt install cmake
+          apt install cmake -y
           rm /usr/bin/gcc
           rm /usr/bin/g++
           ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
