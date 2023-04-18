@@ -1,5 +1,6 @@
 set(FDPAPI_SOURCE_FILES
     ../include/fdp/fdp.hxx
+    ../include/fdp/fdp.h
     ../include/fdp/exceptions.hxx
     ../include/fdp/objects/api_object.hxx
     ../include/fdp/objects/config.hxx
@@ -12,6 +13,7 @@ set(FDPAPI_SOURCE_FILES
     ../include/fdp/utilities/logging.hxx
     ../include/fdp/utilities/semver.hxx
     ./fdp.cxx
+    ./fdp_c_api.cxx
     ./objects/api_object.cxx
     ./objects/config.cxx
     ./objects/distribution.cxx
