@@ -34,7 +34,7 @@ jobs:
       - name: Move simpleModel
         run: |
           mv cppSimpleModel ../cppSimpleModel
-          mv cSimple_model ../cSimpleModel
+          mv cSimpleModel ../cSimpleModel
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
