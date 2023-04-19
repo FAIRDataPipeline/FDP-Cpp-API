@@ -38,7 +38,10 @@ TEST(CTest, link_read_write){
   std::string token = fdp::read_token(
     fs::path(home_dir()) / ".fair" / "registry" / "token"
   );
-  ASSERT_EQ(fdp_init(config.c_str(), script.c_str(), token.c_str()), FDP_ERR_NONE);
+  ASSERT_EQ(
+    fdp_init(config.string().c_str(), script.string().c_str(), token.c_str()),
+    FDP_ERR_NONE
+  );
   char buf[512];
 
   // Test link write
@@ -54,7 +57,10 @@ TEST(CTest, link_read_write){
   // Finalise and re-initialise
   ASSERT_EQ(fdp_finalise(), FDP_ERR_NONE);
   config = fs::path(TESTDIR) / "data" / "read_csv.yaml";
-  ASSERT_EQ(fdp_init(config.c_str(), script.c_str(), token.c_str()), FDP_ERR_NONE);
+  ASSERT_EQ(
+    fdp_init(config.string().c_str(), script.string().c_str(), token.c_str()),
+    FDP_ERR_NONE
+  );
 
   // Test link read
   buf[0] = '\0'; // Ensure strlen of output buffer is 0
