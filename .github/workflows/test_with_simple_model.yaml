@@ -76,8 +76,8 @@ jobs:
           cmake -Bbuild -DCPPDATAPIPELINEREF="heads/${GITHUB_REF/refs\/heads\//}"
           cmake --build build
           fair init --ci --local
-          fair pull --local data/seirs_config.yaml
-          fair run --local data/seirs_config.yaml
+          fair pull --local data/config.yaml
+          fair run --local data/config.yaml
         if: startsWith(github.ref, 'refs/tags/') != true
       - name: Build and run seirs example using C API on tagged release
         run: |
@@ -88,8 +88,8 @@ jobs:
           cmake -Bbuild -DCPPDATAPIPELINEREF="tags/${GITHUB_REF/refs\/tags\//}"
           cmake --build build
           fair init --ci --local
-          fair pull --local data/seirs_config.yaml
-          fair run --local data/seirs_config.yaml
+          fair pull --local data/config.yaml
+          fair run --local data/config.yaml
         if: startsWith(github.ref, 'refs/tags/')
   Build_simple_model_from_install:
     name: Build Ubuntu simple model from install
