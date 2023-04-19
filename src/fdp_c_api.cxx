@@ -119,6 +119,7 @@ FDP_ERR_T fdp_finalise(){
     return exception_to_err_code_void(
         [=](){
             _datapipeline->finalise();
+            _datapipeline = nullptr;
         }
     );
 }
