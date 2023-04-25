@@ -28,6 +28,11 @@ FdpDataPipeline* FDP::to_c_struct(FDP::DataPipeline::sptr data_pipeline){
     return new FdpDataPipeline{data_pipeline};
 }
 
+
+void FDP::delete_c_struct(FdpDataPipeline *data_pipeline){
+    delete data_pipeline;
+}
+
 /** 
  * @brief Utility method, calls exception-raising function and returns error codes
  *
@@ -116,7 +121,7 @@ FdpError fdp_init(
         std::string(script_file_path),
         token_str
     );
-    *data_pipeline = to_c_struct(cpp_data_pipeline);
+    *data_pipeline = FDP::to_c_struct(cpp_data_pipeline);
     return err;
 }
 
@@ -129,7 +134,7 @@ FdpError fdp_finalise(FdpDataPipeline **data_pipeline){
         [](FDP::DataPipeline::sptr pipeline){pipeline->finalise();},
         (*data_pipeline)->_pipeline
     );
-    delete *data_pipeline;
+    FDP::delete_c_struct(*data_pipeline);
     *data_pipeline = nullptr;
     return err;
 }

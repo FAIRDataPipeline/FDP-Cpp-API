@@ -186,11 +186,16 @@ DataPipeline::sptr from_c_struct(FdpDataPipeline *data_pipeline);
  *
  * If the pipeline is set up using the C++ method DataPipeline::construct, this may be
  * used to generate a C-compatible struct. Note that this uses 'new' to allocate the
- * returned pointer, so the user should 'delete` the pointer after use to avoid memory
+ * returned pointer, so the user should 'delete_c_struct` after use to avoid memory
  * leaks. It is not recommended to mix usage of the C and C++ APIs for init and finalise
  * functions.
  */
 FdpDataPipeline* to_c_struct(DataPipeline::sptr data_pipeline);
+
+/**
+ * @brief Function to clean up FdpDataPipeline created by to_c_struct
+ */
+void delete_c_struct(FdpDataPipeline *data_pipeline);
 
 } // close namespace FairDataPipeline
 
