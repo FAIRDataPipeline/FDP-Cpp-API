@@ -33,20 +33,26 @@ TEST(CTest, link_read_write){
   fdp_set_log_level(FDP_LOG_DEBUG);
 
   // Initialise
+  FdpDataPipeline* pipeline;
   fs::path config = fs::path(TESTDIR) / "data" / "write_csv.yaml";
   fs::path script = fs::path(TESTDIR) / "test_script.sh";
   std::string token = fdp::read_token(
     fs::path(home_dir()) / ".fair" / "registry" / "token"
   );
   ASSERT_EQ(
-    fdp_init(config.string().c_str(), script.string().c_str(), token.c_str()),
+    fdp_init(
+        &pipeline,
+        config.string().c_str(),
+        script.string().c_str(),
+        token.c_str()
+    ),
     FDP_ERR_NONE
   );
   char buf[512];
 
   // Test link write
   buf[0] = '\0'; // Ensure strlen of output buffer is 0
-  EXPECT_EQ(fdp_link_write("test/csv", buf), FDP_ERR_NONE);
+  EXPECT_EQ(fdp_link_write(pipeline, "test/csv", buf), FDP_ERR_NONE);
   EXPECT_GT(strlen(buf), 1);
 
   // Write to new path
@@ -55,20 +61,25 @@ TEST(CTest, link_read_write){
   fstream.close();
 
   // Finalise and re-initialise
-  ASSERT_EQ(fdp_finalise(), FDP_ERR_NONE);
+  ASSERT_EQ(fdp_finalise(&pipeline), FDP_ERR_NONE);
   config = fs::path(TESTDIR) / "data" / "read_csv.yaml";
   ASSERT_EQ(
-    fdp_init(config.string().c_str(), script.string().c_str(), token.c_str()),
+    fdp_init(
+        &pipeline,
+        config.string().c_str(),
+        script.string().c_str(),
+        token.c_str()
+    ),
     FDP_ERR_NONE
   );
 
   // Test link read
   buf[0] = '\0'; // Ensure strlen of output buffer is 0
-  EXPECT_EQ(fdp_link_read("test/csv", buf), FDP_ERR_NONE);
+  EXPECT_EQ(fdp_link_read(pipeline, "test/csv", buf), FDP_ERR_NONE);
   EXPECT_GT(strlen(buf), 1);
 
   // Finalise again
-  EXPECT_EQ(fdp_finalise(), FDP_ERR_NONE);
+  EXPECT_EQ(fdp_finalise(&pipeline), FDP_ERR_NONE);
 }
 
 

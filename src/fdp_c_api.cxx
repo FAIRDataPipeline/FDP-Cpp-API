@@ -11,12 +11,29 @@
 
 namespace FDP = FairDataPipeline;
 
+
+// Define FdpDataPipeline struct and conversion routines
+
+struct FdpDataPipeline {
+    FDP::DataPipeline::sptr _pipeline;
+};
+
+
+FDP::DataPipeline::sptr FDP::from_c_struct(FdpDataPipeline *data_pipeline){
+    return data_pipeline->_pipeline;
+}
+
+
+FdpDataPipeline* FDP::to_c_struct(FDP::DataPipeline::sptr data_pipeline){
+    return new FdpDataPipeline{data_pipeline};
+}
+
 /** 
  * @brief Utility method, calls exception-raising function and returns error codes
  *
  * Used to permit calls to C++ functions that may raise exceptions within a C
  * environment. If any exceptions are thrown, these are caught and converted to an error
- * code using the enum type FDP_ERR_T.
+ * code using the enum type FdpError.
  *
  * Many functions in the C++ API operate on a shared pointer to a
  * FairDataPipeline::DataPipeline object. To call a function on this shared pointer
@@ -31,7 +48,7 @@ namespace FDP = FairDataPipeline;
  * @see exception_to_err_code_void
  */
 template<typename Function, typename Return, typename... Args>
-FDP_ERR_T exception_to_err_code(Function&& function, Return& ret, Args&&... args){
+FdpError exception_to_err_code(Function&& function, Return& ret, Args&&... args){
     try{
         ret = std::forward<Function>(function)(std::forward<Args>(args)...);
         return FDP_ERR_NONE;
@@ -66,7 +83,7 @@ FDP_ERR_T exception_to_err_code(Function&& function, Return& ret, Args&&... args
  * @brief Companion to exception_to_err_code for non-returning functions.
  */
 template<typename Function, typename... Args>
-FDP_ERR_T exception_to_err_code_void(Function&& function, Args&&... args){
+FdpError exception_to_err_code_void(Function&& function, Args&&... args){
     int dummy;
     return exception_to_err_code(
         [&function](Args&&... args) -> int {
@@ -84,81 +101,83 @@ FDP_ERR_T exception_to_err_code_void(Function&& function, Args&&... args){
 // =================
 
 
-/**
- * @brief Global instance of FairDataPipeline::DataPipeline
- *
- * This should be initialised by fdp_init and deleted by fdp_finalise. The functions
- * fdp_link_read and fdp_link_write make use of this, so will have undefined behaviour
- * if called before init and after finalise.
- */
-FDP::DataPipeline::sptr _datapipeline;
-
-
-FDP_ERR_T fdp_init(
+FdpError fdp_init(
+    FdpDataPipeline **data_pipeline,
     const char *config_file_path,
     const char *script_file_path,
     const char *token
 ){
     std::string token_str = (token == nullptr ? "" : token);
-
-    if(_datapipeline == nullptr){
-        return exception_to_err_code(
-            FDP::DataPipeline::construct,
-            _datapipeline,
-            std::string(config_file_path),
-            std::string(script_file_path),
-            token_str
-        );
-    }
-    return FDP_ERR_OTHER;
+    FDP::DataPipeline::sptr cpp_data_pipeline;
+    FdpError err = exception_to_err_code(
+        FDP::DataPipeline::construct,
+        cpp_data_pipeline,
+        std::string(config_file_path),
+        std::string(script_file_path),
+        token_str
+    );
+    *data_pipeline = to_c_struct(cpp_data_pipeline);
+    return err;
 }
 
 
-FDP_ERR_T fdp_finalise(){
-    if(_datapipeline == nullptr) return FDP_ERR_OTHER;
-    return exception_to_err_code_void(
-        [=](){
-            _datapipeline->finalise();
-            _datapipeline = nullptr;
-        }
+FdpError fdp_finalise(FdpDataPipeline **data_pipeline){
+    if(*data_pipeline == nullptr || (*data_pipeline)->_pipeline == nullptr){
+        return FDP_ERR_OTHER;
+    }
+    FdpError err = exception_to_err_code_void(
+        [](FDP::DataPipeline::sptr pipeline){pipeline->finalise();},
+        (*data_pipeline)->_pipeline
     );
+    delete *data_pipeline;
+    *data_pipeline = nullptr;
+    return err;
 }
 
 
 template<typename LinkFunction>
-FDP_ERR_T _fdp_link(LinkFunction&& link_function, const char* path, char* output){
-    if(_datapipeline == nullptr) return FDP_ERR_OTHER;
+FdpError _fdp_link(
+    LinkFunction&& link_function,
+    FdpDataPipeline *data_pipeline,
+    const char *path,
+    char *output
+){
+    if(data_pipeline == nullptr || data_pipeline->_pipeline == nullptr){
+        return FDP_ERR_OTHER;
+    }
     std::string input_path = path;
     std::string output_path;
-    FDP_ERR_T err = exception_to_err_code(
+    // Call either link_read or link_write on the pipeline, sets output_path
+    FdpError err = exception_to_err_code(
         std::forward<LinkFunction>(link_function),
         output_path,
+        data_pipeline->_pipeline,
         input_path
     );
-    if(err){
-        return err;
-    } 
+    if(err) return err;
     strcpy(output, output_path.c_str());
     return FDP_ERR_NONE;
 }
 
 
-FDP_ERR_T fdp_link_read(const char* path, char* output){
+FdpError fdp_link_read(FdpDataPipeline *data_pipeline, const char *path, char *output){
     return _fdp_link(
-        [=](std::string& path) -> std::string {
-            return _datapipeline->link_read(path);
+        [](FDP::DataPipeline::sptr pipeline, std::string& path) -> std::string {
+            return pipeline->link_read(path);
         },
+        data_pipeline,
         path,
         output
     );
 }
 
 
-FDP_ERR_T fdp_link_write(const char* path, char* output){
+FdpError fdp_link_write(FdpDataPipeline *data_pipeline, const char *path, char *output){
     return _fdp_link(
-        [=](std::string& path) -> std::string {
-            return _datapipeline->link_write(path);
+        [](FDP::DataPipeline::sptr pipeline, std::string& path) -> std::string {
+            return pipeline->link_write(path);
         },
+        data_pipeline,
         path,
         output
     );
@@ -172,7 +191,7 @@ FDP_ERR_T fdp_link_write(const char* path, char* output){
 /**
  * @brief Map converting C API logging enums to the C++ API
  */
-std::map<FDP_LOG_LEVEL, FDP::logging::LOG_LEVEL> to_cpp_enum = {
+std::map<FdpLogLevel, FDP::logging::LOG_LEVEL> to_cpp_enum = {
     {FDP_LOG_TRACE, FDP::logging::TRACE},
     {FDP_LOG_DEBUG, FDP::logging::DEBUG},
     {FDP_LOG_INFO, FDP::logging::INFO},
@@ -186,7 +205,7 @@ std::map<FDP_LOG_LEVEL, FDP::logging::LOG_LEVEL> to_cpp_enum = {
 /**
  * @brief Map converting C++ API logging enums to the C API
  */
-std::map<FDP::logging::LOG_LEVEL, FDP_LOG_LEVEL> to_c_enum = {
+std::map<FDP::logging::LOG_LEVEL, FdpLogLevel> to_c_enum = {
     {FDP::logging::TRACE, FDP_LOG_TRACE},
     {FDP::logging::DEBUG, FDP_LOG_DEBUG},
     {FDP::logging::INFO, FDP_LOG_INFO},
@@ -197,17 +216,17 @@ std::map<FDP::logging::LOG_LEVEL, FDP_LOG_LEVEL> to_c_enum = {
 };
 
 
-void fdp_set_log_level(FDP_LOG_LEVEL log_level){
+void fdp_set_log_level(FdpLogLevel log_level){
     FDP::logger::get_logger()->set_level(to_cpp_enum[log_level]);
 }
 
 
-FDP_LOG_LEVEL fdp_get_log_level(){
+FdpLogLevel fdp_get_log_level(){
     return to_c_enum[FDP::logger::get_logger()->get_level()];
 }
 
 
-int fdp_log(FDP_LOG_LEVEL log_level, const char* msg){
+int fdp_log(FdpLogLevel log_level, const char *msg){
     switch(log_level){
         case FDP_LOG_TRACE:
             FDP::logger::get_logger()->trace() << msg;

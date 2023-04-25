@@ -3,9 +3,23 @@
 
 
 #ifdef __cplusplus
+
+#include "fdp.hxx"
+
 extern "C" {
+
 #endif
 
+/**
+ * @brief Struct providing an interface to the pipeline.
+ *
+ * Defined in the implementation file, as it depends on C++ features. A pointer to this
+ * struct should be passed to functions in the C API. Set up by the function fdp_init,
+ * and finalised by fdp_finalise. Can also be generated from a C++ DataPipeline
+ * using to_c_struct.
+ */
+struct FdpDataPipeline;
+typedef struct FdpDataPipeline FdpDataPipeline;
 
 /**
  * @brief Enumeration used to denote different error types.
@@ -13,7 +27,7 @@ extern "C" {
  * The underlying C++ API will raise a number of different exception types. These map to
  * integer error codes for C compatibility.
  */
-enum FDP_ERR_T {
+enum FdpError {
     FDP_ERR_NONE = 0,
     FDP_ERR_CONFIG_PARSE = 1,
     FDP_ERR_REST_API_QUERY = 2,
@@ -21,10 +35,10 @@ enum FDP_ERR_T {
     FDP_ERR_VALIDATION = 4,
     FDP_ERR_SYNC = 5,
     FDP_ERR_WRITE = 6,
-    FDP_ERR_TOML = 6,
-    FDP_ERR_OTHER = 7
+    FDP_ERR_TOML = 7,
+    FDP_ERR_OTHER = 8
 };
-typedef enum FDP_ERR_T FDP_ERR_T;
+typedef enum FdpError FdpError;
 
 
 /**
@@ -33,6 +47,10 @@ typedef enum FDP_ERR_T FDP_ERR_T;
  * Should be called once before any calls to fdp_link_read or fdp_link_write. If called
  * more than once, returns FDP_ERR_OTHER.
  * 
+ * @param data_pipeline     Pointer-to-pointer of a FdpDataPipeline object. The user
+ *                          should declare a pointer to a FdpDataPipeline, and pass its
+ *                          address to this function. This function will then initialise
+ *                          the pipeline.
  * @param config_file_path  Path to the `config.yaml` file for this FDP run. Should
  *                          be at the location `${FDP_CONFIG_DIR}/config.yaml`.
  * @param script_file_path  Path to the script which initiates this FDP run. Should
@@ -42,7 +60,8 @@ typedef enum FDP_ERR_T FDP_ERR_T;
  *
  * @return Error code.
  */
-FDP_ERR_T fdp_init(
+FdpError fdp_init(
+    FdpDataPipeline **data_pipeline,
     const char *config_file_path,
     const char *script_file_path,
     const char *token
@@ -56,10 +75,13 @@ FDP_ERR_T fdp_init(
  * 
  * Record all data products and meta data to the registry. Update the code run with all
  * appropriate meta data.
+ *
+ * @param data_pipeline Pointer-to-pointer of a FdpDataPipeline object. This function
+ *                      finalises the FdpDataPipeline, and sets its pointer to NULL.
  * 
  * @return Error code.
  */
-FDP_ERR_T fdp_finalise();
+FdpError fdp_finalise(FdpDataPipeline **data_pipeline);
 
 
 /**
@@ -68,12 +90,17 @@ FDP_ERR_T fdp_finalise();
  *
  * Must be called after fdp_init and before fdp_finalise.
  * 
+ * @param data_pipeline   Pointer to a FdpDataPipeline object.
  * @param data_product    Path to the input file.
  * @param data_store_path Path to the assigned data store location. The user should
  *                        allocate sufficient memory beforehand.
  * @return Error code
  */
-FDP_ERR_T fdp_link_read(const char *data_product, char *data_store_path);
+FdpError fdp_link_read(
+    FdpDataPipeline *data_pipeline,
+    const char *data_product,
+    char *data_store_path
+);
 
 
 /**
@@ -82,12 +109,17 @@ FDP_ERR_T fdp_link_read(const char *data_product, char *data_store_path);
  *
  * Must be called after fdp_init and before fdp_finalise.
  * 
+ * @param data_pipeline   Pointer to a FdpDataPipeline object.
  * @param data_product    Path to the output file.
  * @param data_store_path Path to the assigned data store location. The user should
  *                        allocate sufficient memory beforehand.
  * @return Error code
  */
-FDP_ERR_T fdp_link_write(const char *data_product, char *data_store_path);
+FdpError fdp_link_write(
+    FdpDataPipeline *data_pipeline,
+    const char *data_product,
+    char *data_store_path
+);
 
 
 /**
@@ -97,7 +129,7 @@ FDP_ERR_T fdp_link_write(const char *data_product, char *data_store_path);
  * level to `DEBUG` will include all log types except `TRACE`. These correspond to
  * the C++ logging levels `FairDataPipeline::logging::LOG_LEVEL`.
  */
-enum FDP_LOG_LEVEL {
+enum FdpLogLevel {
     FDP_LOG_TRACE = 0,
     FDP_LOG_DEBUG = 1,
     FDP_LOG_INFO = 2,
@@ -106,7 +138,7 @@ enum FDP_LOG_LEVEL {
     FDP_LOG_CRITICAL = 5,
     FDP_LOG_OFF = 6
 };
-typedef enum FDP_LOG_LEVEL FDP_LOG_LEVEL;
+typedef enum FdpLogLevel FdpLogLevel;
 
 
 /**
@@ -114,7 +146,7 @@ typedef enum FDP_LOG_LEVEL FDP_LOG_LEVEL;
  *
  * @param log_level
  */
-void fdp_set_log_level(FDP_LOG_LEVEL log_level);
+void fdp_set_log_level(FdpLogLevel log_level);
 
 
 /**
@@ -122,7 +154,7 @@ void fdp_set_log_level(FDP_LOG_LEVEL log_level);
  *
  * @return Log level
  */
-FDP_LOG_LEVEL fdp_get_log_level();
+FdpLogLevel fdp_get_log_level();
 
 
 /**
@@ -135,11 +167,33 @@ FDP_LOG_LEVEL fdp_get_log_level();
  *
  * @return Error code. 1 if logging unsuccessful, 0 otherwise.
  */
-int fdp_log(FDP_LOG_LEVEL log_level, const char* msg);
+int fdp_log(FdpLogLevel log_level, const char *msg);
 
 
 #ifdef __cplusplus
+
 } // close extern "C"
+
+namespace FairDataPipeline {
+
+/**
+ * @brief Convert data pipeline from the C API to one in the C++ API.
+ */
+DataPipeline::sptr from_c_struct(FdpDataPipeline *data_pipeline);
+
+/**
+ * @brief Convert data pipeline from the C++ API to one in the C API.
+ *
+ * If the pipeline is set up using the C++ method DataPipeline::construct, this may be
+ * used to generate a C-compatible struct. Note that this uses 'new' to allocate the
+ * returned pointer, so the user should 'delete` the pointer after use to avoid memory
+ * leaks. It is not recommended to mix usage of the C and C++ APIs for init and finalise
+ * functions.
+ */
+FdpDataPipeline* to_c_struct(DataPipeline::sptr data_pipeline);
+
+} // close namespace FairDataPipeline
+
 #endif
 
 
