@@ -91,12 +91,11 @@ template<typename Function, typename... Args>
 FdpError exception_to_err_code_void(Function&& function, Args&&... args){
     int dummy;
     return exception_to_err_code(
-        [&function](Args&&... args) -> int {
+        [&function, &args...]() -> int {
             std::forward<Function>(function)(std::forward<Args>(args)...);
             return 0;
         },
-        dummy,
-        std::forward<Args>(args)...
+        dummy
     );
 }
 
