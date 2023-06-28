@@ -131,44 +131,4 @@ jobs:
         run: |
           cmake --build build --config=Release --target install
           cmake -B build_from_install -DFDPAPI_BUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=install -DFDPAPI_NEVER_FETCH=ON
-          cmake --build build_from_install --config=Release 
-  Build_GCC_4_8:
-    name: Build GCC 4.8
-    runs-on: ubuntu-latest
-    container: 
-      image: ubuntu:18.04
-      options: --user root
-    steps:      
-      - uses: actions/setup-python@v4
-        with: 
-          python-version: "3.9"
-          architecture: "x64"
-      - name: Setup GCC 4.8
-        run: |
-          apt update
-          apt install build-essential libssl-dev git -y
-          git clone https://github.com/Kitware/CMake/
-          cd CMake
-          ./bootstrap && make && make install
-          cmake --version
-          apt install g++-4.8 gcc-4.8 -y
-          rm /usr/bin/gcc
-          rm /usr/bin/g++
-          ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
-          ln -s /usr/bin/g++-4.8 /usr/bin/g++
-          gcc --version
-          g++ --version
-          cmake --version
-      - uses: actions/checkout@v3
-      - name: Install Dependencies
-        run: |
-          apt install -y lcov curl libcurl4-openssl-dev gcovr
-      - name: Configure Library
-        run: |
-          cd $GITHUB_WORKSPACE
-          ls
-          cmake -Bbuild
-      - name: Build Library
-        run: | 
-          cd $GITHUB_WORKSPACE
-          cmake --build build
+          cmake --build build_from_install --config=Release
