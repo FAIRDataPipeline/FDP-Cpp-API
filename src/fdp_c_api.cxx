@@ -188,6 +188,12 @@ FdpError _fdp_link(LinkFunction &&link_function,
         << "Output path is NULL in call to " << link_function_name;
     return FDP_ERR_OTHER;
   }
+  // Check output len is valid
+  if (output_len == 0) {
+    FDP::logger::get_logger()->error()
+        << "output_len is zero in call to " << link_function_name;
+    return FDP_ERR_OTHER;
+  }
   // Check input is null terminated, max 4096 chars, including terminator
   // TODO Should we check MAX_PATH/PATH_MAX here?
   bool path_null_terminated = false;
@@ -227,7 +233,14 @@ FdpError _fdp_link(LinkFunction &&link_function,
     // Trust that the C++ API logged the error before throwing
     return err;
   }
-  strncat(output, output_path.c_str(), output_len);
+  // Don't copy if output_path won't fit in output buffer
+  // Use >= instead of > to account for null terminator
+  if (output_path.size() >= output_len) {
+    FDP::logger::get_logger()->error()
+        << "Output path won't fit in buffer in call to " << link_function_name;
+    return FDP_ERR_OTHER;
+  }
+  strncpy(output, output_path.c_str(), output_len);
   return FDP_ERR_NONE;
 }
 
