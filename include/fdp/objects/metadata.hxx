@@ -18,7 +18,7 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-#include <re2/re2.h>
+#include <regex>
 
 #include "digestpp/digestpp.hpp"
 
