@@ -45,7 +45,7 @@ TEST(CTest, link_read_write) {
 
   // Test link write
   buf[0] = '\0'; // Ensure strlen of output buffer is 0
-  EXPECT_EQ(fdp_link_write(pipeline, "test/csv", buf, BUFFER_SIZE),
+  EXPECT_EQ(fdp_link_write(pipeline, "test/csv/c", buf, BUFFER_SIZE),
             FDP_ERR_NONE);
   EXPECT_GT(strlen(buf), 1);
 
@@ -63,7 +63,7 @@ TEST(CTest, link_read_write) {
 
   // Test link read
   buf[0] = '\0'; // Ensure strlen of output buffer is 0
-  EXPECT_EQ(fdp_link_read(pipeline, "test/csv", buf, BUFFER_SIZE),
+  EXPECT_EQ(fdp_link_read(pipeline, "test/csv/c", buf, BUFFER_SIZE),
             FDP_ERR_NONE);
   EXPECT_GT(strlen(buf), 1);
 

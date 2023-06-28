@@ -15,3 +15,6 @@ read:
 - data_product: test/csv
   use:
     version: 0.0.1
+- data_product: test/csv/c
+  use:
+    version: 0.0.1

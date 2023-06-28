@@ -18,3 +18,8 @@ write:
   file_type: csv
   use:    
     version: 0.0.1
+- data_product: test/csv/c
+  description: test csv file with simple data
+  file_type: csv
+  use:    
+    version: 0.0.1
