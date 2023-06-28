@@ -1,5 +1,6 @@
 set(FDPAPI_SOURCE_FILES
     ../include/fdp/fdp.hxx
+    ../include/fdp/fdp.h
     ../include/fdp/exceptions.hxx
     ../include/fdp/objects/api_object.hxx
     ../include/fdp/objects/config.hxx
@@ -12,6 +13,7 @@ set(FDPAPI_SOURCE_FILES
     ../include/fdp/utilities/logging.hxx
     ../include/fdp/utilities/semver.hxx
     ./fdp.cxx
+    ./fdp_c_api.cxx
     ./objects/api_object.cxx
     ./objects/config.cxx
     ./objects/distribution.cxx
@@ -52,7 +54,6 @@ target_link_libraries(fdpapi PRIVATE toml11::toml11)
 target_link_libraries(fdpapi PRIVATE digestpp::digestpp)
 target_link_libraries(fdpapi PRIVATE CURL::libcurl)
 target_link_libraries(fdpapi PRIVATE yaml-cpp)
-target_link_libraries(fdpapi PRIVATE re2::re2)
 target_link_libraries(fdpapi PRIVATE ghcFilesystem::ghc_filesystem)
 if(BUILD_SHARED_LIBS)
     target_link_libraries(fdpapi PRIVATE jsoncpp_lib)

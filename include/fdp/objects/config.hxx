@@ -15,8 +15,8 @@
 #include <string>
 #include <ghc/filesystem.hpp>
 #include <yaml-cpp/yaml.h>
-#include <re2/re2.h>
 #include <map>
+#include <regex>
 #include <ghc/filesystem.hpp>
 #include <stdio.h>
 

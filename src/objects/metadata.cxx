@@ -64,15 +64,11 @@ std::string current_time_stamp(bool file_name) {
 }
 
 std::string remove_local_from_root(const std::string &root){
-  std::string result = root;
-  RE2::GlobalReplace(&result, "file:\\/\\/", "");
-  return result;
+  return std::regex_replace(root, std::regex(std::string("file:\\/\\/")), "");
 }
 
 std::string remove_backslash_from_path(const std::string &path){
-  std::string result = path;
-  RE2::GlobalReplace(&result, "\\\\", "/");
-  return result;
+  return std::regex_replace(path, std::regex(std::string("\\\\")), "/");
 }
 
 bool file_exists( const std::string &Filename )

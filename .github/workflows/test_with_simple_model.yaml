@@ -21,13 +21,20 @@ jobs:
               sudo apt-get install -y gnuplot
       - name: Install local registry
         run: curl -fsSL https://data.scrc.uk/static/localregistry.sh | /bin/bash -s -- -b main
-      - name: Checkout Simple
+      - name: Checkout C++ Simple Model
         uses: actions/checkout@v2
         with:
           repository: FAIRDataPipeline/cppSimpleModel
-          path: simpleModel
+          path: cppSimpleModel
+      - name: Checkout C Simple Model
+        uses: actions/checkout@v2
+        with:
+          repository: PlasmaFAIR/cDataPipelineSimpleModel
+          path: cSimpleModel
       - name: Move simpleModel
-        run: mv simpleModel ../simpleModel
+        run: |
+          mv cppSimpleModel ../cppSimpleModel
+          mv cSimpleModel ../cSimpleModel
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
@@ -38,7 +45,7 @@ jobs:
           sudo apt install -y lcov curl libcurl4-openssl-dev libyaml-cpp-dev
       - name: Build and run seirs example
         run: |
-          cd ../simpleModel
+          cd ../cppSimpleModel
           python3 -m venv venv
           source venv/bin/activate
           pip3 install fair-cli
@@ -50,7 +57,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') != true
       - name: Build and run seirs example on tagged release
         run: |
-          cd ../simpleModel
+          cd ../cppSimpleModel
           python3 -m venv venv
           source venv/bin/activate
           pip3 install fair-cli
@@ -59,6 +66,30 @@ jobs:
           fair init --ci --local
           fair pull --local data/seirs_config.yaml
           fair run --local data/seirs_config.yaml
+        if: startsWith(github.ref, 'refs/tags/')
+      - name: Build and run seirs example using C API
+        run: |
+          cd ../cSimpleModel
+          python3 -m venv venv
+          source venv/bin/activate
+          pip3 install fair-cli
+          cmake -Bbuild -DCPPDATAPIPELINEREF="heads/${GITHUB_REF/refs\/heads\//}"
+          cmake --build build
+          fair init --ci --local
+          fair pull --local data/config.yaml
+          fair run --local data/config.yaml
+        if: startsWith(github.ref, 'refs/tags/') != true
+      - name: Build and run seirs example using C API on tagged release
+        run: |
+          cd ../cSimpleModel
+          python3 -m venv venv
+          source venv/bin/activate
+          pip3 install fair-cli
+          cmake -Bbuild -DCPPDATAPIPELINEREF="tags/${GITHUB_REF/refs\/tags\//}"
+          cmake --build build
+          fair init --ci --local
+          fair pull --local data/config.yaml
+          fair run --local data/config.yaml
         if: startsWith(github.ref, 'refs/tags/')
   Build_simple_model_from_install:
     name: Build Ubuntu simple model from install
@@ -69,21 +100,34 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build
         run: |
-          cmake -B build -DCMAKE_INSTALL_PREFIX=install
+          cmake -B build -DCMAKE_INSTALL_PREFIX=../install
           cmake --build build --target install
       - name: Install graphviz
         run:  |
               sudo apt update
               sudo apt-get install graphviz
               sudo apt-get install -y gnuplot
-      - name: Checkout SimpleModel
+      - name: Checkout C++ SimpleModel
         uses: actions/checkout@v3
         with:
           repository: FAIRDataPipeline/cppSimpleModel
-          ref: prevent_fetchcontent_option
-          path: simpleModel
-      - name: Build Simple Model
+          path: cppSimpleModel
+      - name: Checkout C SimpleModel
+        uses: actions/checkout@v3
+        with:
+          repository: PlasmaFAIR/cDataPipelineSimpleModel
+          path: cSimpleModel
+      - name: Move Simple Model dirs
         run: |
-          cd simpleModel
+          mv cppSimpleModel ../cppSimpleModel
+          mv cSimpleModel ../cSimpleModel
+      - name: Build cpp Simple Model
+        run: |
+          cd ../cppSimpleModel
+          cmake -B build -DCMAKE_INSTALL_PREFIX=../install -DFDPAPI_NO_FETCHCONTENT=ON
+          cmake --build build
+      - name: Build C Simple Model
+        run: |
+          cd ../cSimpleModel
           cmake -B build -DCMAKE_INSTALL_PREFIX=../install -DFDPAPI_NO_FETCHCONTENT=ON
           cmake --build build

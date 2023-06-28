@@ -18,7 +18,7 @@
 #include <iterator>
 #include <json/reader.h>
 #include <map>
-#include <re2/re2.h>
+#include <regex>
 #include <string>
 #include <vector>
 
