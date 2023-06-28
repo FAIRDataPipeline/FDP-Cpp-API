@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
-#include <iostream>
 #include <map>
 #include <string>
 #include <utility>
@@ -141,8 +140,7 @@ FdpError fdp_init(FdpDataPipeline **data_pipeline, const char *config_file_path,
       FDP::DataPipeline::construct, cpp_data_pipeline,
       std::string(config_file_path), std::string(script_file_path), token_str);
   if (err) {
-    std::cerr << "ERROR: Error of type '" << error_name(err)
-              << "' in call to fdp_init" << std::endl;
+    // Trust that the C++ API logged the error before throwing
     *data_pipeline = nullptr;
     return err;
   }
@@ -152,16 +150,15 @@ FdpError fdp_init(FdpDataPipeline **data_pipeline, const char *config_file_path,
 
 FdpError fdp_finalise(FdpDataPipeline **data_pipeline) {
   if (*data_pipeline == nullptr || (*data_pipeline)->_pipeline == nullptr) {
-    std::cerr << "ERROR: Pipeline not initialiased in call to fdp_finalise"
-              << std::endl;
+    FDP::logger::get_logger()->error()
+        << "Pipeline not initialiased in call to fdp_finalise";
     return FDP_ERR_OTHER;
   }
   FdpError err = exception_to_err_code_void(
       [](FDP::DataPipeline::sptr pipeline) { pipeline->finalise(); },
       (*data_pipeline)->_pipeline);
   if (err) {
-    std::cerr << "ERROR: Error of type '" << error_name(err)
-              << "' in call to fdp_finalise" << std::endl;
+    // Trust that the C++ API logged the error before throwing
     return err;
   }
   FDP::delete_c_struct(*data_pipeline);
@@ -176,19 +173,19 @@ FdpError _fdp_link(LinkFunction &&link_function,
                    char *output, size_t output_len) {
   // Ensure pipeline is initialised
   if (data_pipeline == nullptr || data_pipeline->_pipeline == nullptr) {
-    std::cerr << "ERROR: Data pipeline not initialised in call to "
-              << link_function_name << std::endl;
+    FDP::logger::get_logger()->error()
+        << " Data pipeline not initialised in call to " << link_function_name;
     return FDP_ERR_OTHER;
   }
   // Ensure input and output paths are valid
   if (path == nullptr) {
-    std::cerr << "ERROR: Input path is NULL in call to " << link_function_name
-              << std::endl;
+    FDP::logger::get_logger()->error()
+        << "Input path is NULL in call to " << link_function_name;
     return FDP_ERR_OTHER;
   }
   if (output == nullptr) {
-    std::cerr << "ERROR: Output path is NULL in call to " << link_function_name
-              << std::endl;
+    FDP::logger::get_logger()->error()
+        << "Output path is NULL in call to " << link_function_name;
     return FDP_ERR_OTHER;
   }
   // Check input is null terminated, max 4096 chars, including terminator
@@ -203,9 +200,10 @@ FdpError _fdp_link(LinkFunction &&link_function,
     }
   }
   if (!path_null_terminated) {
-    std::cerr << "ERROR: Input path is not null-terminated or is longer than "
-                 "4095 chars in call to "
-              << link_function_name << std::endl;
+    FDP::logger::get_logger()->error()
+        << "Input path is not null-terminated or is longer than 4095 chars in "
+           "call to "
+        << link_function_name;
     return FDP_ERR_OTHER;
   }
   // Check input and output don't overlap
@@ -214,8 +212,8 @@ FdpError _fdp_link(LinkFunction &&link_function,
   auto y1 = reinterpret_cast<std::uintptr_t>(output);
   auto y2 = y1 + output_len;
   if (std::max(x1, y1) <= std::min(x2, y2)) {
-    std::cerr << "ERROR: Input and output paths overlap in call to "
-              << link_function_name << std::endl;
+    FDP::logger::get_logger()->error()
+        << "Input and output paths overlap in call to " << link_function_name;
     return FDP_ERR_OTHER;
   }
   // Use C++ strings over C strings to interface with the C++ pipeline
@@ -226,8 +224,7 @@ FdpError _fdp_link(LinkFunction &&link_function,
       exception_to_err_code(std::forward<LinkFunction>(link_function),
                             output_path, data_pipeline->_pipeline, input_path);
   if (err) {
-    std::cerr << "ERROR: Error of type '" << error_name(err) << "' in call to "
-              << link_function_name << std::endl;
+    // Trust that the C++ API logged the error before throwing
     return err;
   }
   strncat(output, output_path.c_str(), output_len);
