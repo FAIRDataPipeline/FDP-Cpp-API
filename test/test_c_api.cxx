@@ -37,10 +37,12 @@ TEST(CTest, link_read_write) {
   FdpDataPipeline *pipeline;
   fs::path config = fs::path(TESTDIR) / "data" / "write_csv.yaml";
   fs::path script = fs::path(TESTDIR) / "test_script.sh";
-  std::string token =
-      fdp::read_token(fs::path(home_dir()) / ".fair" / "registry" / "token");
+  fs::path token_path = fs::path(home_dir()) / ".fair" / "registry" / "token";
+  char token[BUFFER_SIZE];
+  ASSERT_EQ(fdp_read_token(token_path.c_str(), token, BUFFER_SIZE),
+            FDP_ERR_NONE);
   ASSERT_EQ(fdp_init(&pipeline, config.string().c_str(),
-                     script.string().c_str(), token.c_str()),
+                     script.string().c_str(), token),
             FDP_ERR_NONE);
 
   // Test link write
@@ -58,7 +60,7 @@ TEST(CTest, link_read_write) {
   ASSERT_EQ(fdp_finalise(&pipeline), FDP_ERR_NONE);
   config = fs::path(TESTDIR) / "data" / "read_csv.yaml";
   ASSERT_EQ(fdp_init(&pipeline, config.string().c_str(),
-                     script.string().c_str(), token.c_str()),
+                     script.string().c_str(), token),
             FDP_ERR_NONE);
 
   // Test link read
@@ -111,10 +113,12 @@ TEST(CTest, c_to_cpp) {
   FdpDataPipeline *c_pipeline;
   fs::path config = fs::path(TESTDIR) / "data" / "write_csv.yaml";
   fs::path script = fs::path(TESTDIR) / "test_script.sh";
-  std::string token =
-      fdp::read_token(fs::path(home_dir()) / ".fair" / "registry" / "token");
+  fs::path token_path = fs::path(home_dir()) / ".fair" / "registry" / "token";
+  char token[BUFFER_SIZE];
+  ASSERT_EQ(fdp_read_token(token_path.c_str(), token, BUFFER_SIZE),
+            FDP_ERR_NONE);
   ASSERT_EQ(fdp_init(&c_pipeline, config.string().c_str(),
-                     script.string().c_str(), token.c_str()),
+                     script.string().c_str(), token),
             FDP_ERR_NONE);
 
   // Switch to C++ API

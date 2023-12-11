@@ -118,7 +118,8 @@ FdpError fdp_link_read(FdpDataPipeline *data_pipeline, const char *data_product,
  * @return Error code
  */
 FdpError fdp_link_write(FdpDataPipeline *data_pipeline,
-                        const char *data_product, char *data_store_path, size_t data_store_path_len);
+                        const char *data_product, char *data_store_path,
+                        size_t data_store_path_len);
 
 /**
  * @brief Enumeration used to denote the different levels of logging.
@@ -167,6 +168,21 @@ FdpLogLevel fdp_get_log_level();
  * @return Error code. 1 if logging unsuccessful, 0 otherwise.
  */
 int fdp_log(FdpLogLevel log_level, const char *msg);
+
+/**
+ * @brief Read token from file.
+ *
+ * @param path The path to the token file.
+ *
+ * @param token Destination to store the token. The user must allocate
+ * sufficient space for the token.
+ *
+ * @param token_len Length of the character array used to store the token.
+ *
+ * @return Error code. Returns 0 if the token was read successfully, or a
+ * positive integer otherwise.
+ */
+FdpError fdp_read_token(const char *path, char *token, size_t token_len);
 
 #ifdef __cplusplus
 
