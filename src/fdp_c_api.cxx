@@ -5,9 +5,12 @@
 #include <string>
 #include <utility>
 
+#include <ghc/filesystem.hpp>
+
 #include "fdp/exceptions.hxx"
 #include "fdp/fdp.h"
 #include "fdp/fdp.hxx"
+#include "fdp/objects/metadata.hxx"
 #include "fdp/utilities/logging.hxx"
 
 namespace FDP = FairDataPipeline;
@@ -55,7 +58,7 @@ void FDP::delete_c_struct(FdpDataPipeline *data_pipeline) {
  */
 template <typename Function, typename Return, typename... Args>
 FdpError exception_to_err_code(Function &&function, Return &ret,
-                               Args &&... args) {
+                               Args &&...args) {
   try {
     ret = std::forward<Function>(function)(std::forward<Args>(args)...);
     return FDP_ERR_NONE;
@@ -82,7 +85,7 @@ FdpError exception_to_err_code(Function &&function, Return &ret,
  * @brief Companion to exception_to_err_code for non-returning functions.
  */
 template <typename Function, typename... Args>
-FdpError exception_to_err_code_void(Function &&function, Args &&... args) {
+FdpError exception_to_err_code_void(Function &&function, Args &&...args) {
   int dummy;
   return exception_to_err_code(
       [&function, &args...]() -> int {
@@ -322,4 +325,25 @@ int fdp_log(FdpLogLevel log_level, const char *msg) {
     return 1;
   }
   return 0;
+}
+
+// =========
+// utilities
+// =========
+
+FdpError fdp_read_token(const char *path, char *token, size_t token_len) {
+  std::string token_str;
+  FdpError err = exception_to_err_code(FDP::read_token, token_str,
+                                       ghc::filesystem::path(path));
+  if (err) {
+    FDP::logger::get_logger()->error() << "Failed to read token file";
+    return err;
+  }
+  if (token_str.size() >= token_len) {
+    FDP::logger::get_logger()->error()
+        << "Token array is too small to store token";
+    return FDP_ERR_OTHER;
+  }
+  strncpy(token, token_str.c_str(), token_len);
+  return err;
 }
